@@ -131,9 +131,9 @@ df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
 df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
 
 #write csv file
-out<-cbind(df_wide$full,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
-colnames(out)<-c('ID','Treat','Type','Rep','NDVI','CI1','CI2')
-write.csv(out,paste(github_dir,'/data/Level1/Chlorophyll_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
+out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','CI1','CI2')
+write.csv(out,paste(github_dir,'/data/Level1/ASD_Chlorophyll_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
 
 #######UAS HEADWALL##############################
 master <- read.csv2(paste(github_dir,'/data/Headwall/Headwall_Datasheet_021422_021522.csv',sep=''),sep=',',header=T)
@@ -150,13 +150,14 @@ for(i in 1:length(master$File)){
   quad=rep(master$Quad[i],length(wvl))
   type=rep(master$Biocrust[i],length(wvl))
   rep=rep(master$Rep[i],length(wvl))
+  full=paste(plot,'_',treat,'_',type,'_',rep,sep='')
   scan=rep(master$File[i],length(wvl))
   
-  ds=cbind(wvl,data_c,plot,tmp,wtr,treat,quad,type,rep,scan)
+  ds=cbind(wvl,data_c,plot,tmp,wtr,treat,quad,type,rep,full,scan)
   dataset <- rbind(dataset,ds)
 }
 #Name the columns
-names(dataset) <- c("wavelength","reflectance","plot","tmp","wtr","treat","quad","type","rep","scan")
+names(dataset) <- c("wavelength","reflectance","plot","tmp","wtr","treat","quad","type","rep","full","scan")
 dataset=transform(dataset,wavelength = as.numeric(wavelength))
 dataset=transform(dataset,reflectance = as.numeric(reflectance))
 
@@ -179,5 +180,20 @@ ggplot(dataset_mean_std, aes(x=wavelength,y=mean,group=type,color=type)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/Hyperspectral_Reflectance_Headwall.png',sep=''),dpi=300,width=180,height=120,units='mm')
+
+####################################################################################################
+#VIs - Convert to wide format
+df_wide <- dataset %>% select(wavelength, reflectance, full) %>%
+  pivot_wider(names_from = wavelength, values_from = reflectance, id_cols = full, values_fn = mean)
+
+#Chlorophyll
+df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
+df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
+df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
+
+#write csv file
+out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','CI1','CI2')
+write.csv(out,paste(github_dir,'/data/Level1/Headwall_Chlorophyll_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
 
   
