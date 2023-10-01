@@ -97,6 +97,30 @@ ggplot(dataset_mean_std, aes(x=wavelength,y=mean,group=treat,color=treat)) +
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/Hyperspectral_Reflectance_PLOT_VNIR_ASD_PLOT.png',sep=''),dpi=300,width=180,height=120,units='mm')
 
+####################################################################################################
+#VIs - Convert to wide format
+df_wide <- dataset %>% select(wavelength, reflectance, full) %>%
+  pivot_wider(names_from = wavelength, values_from = reflectance, id_cols = full, values_fn = mean)
+
+#Bands & Chlorophyll
+df_wide$CBLUE <- calc_Band(df_wide,400,450)
+df_wide$BLUE <- calc_Band(df_wide,450,510)
+df_wide$GRN <- calc_Band(df_wide,510,580)
+df_wide$YLW <- calc_Band(df_wide,584,624)
+df_wide$RED <- calc_Band(df_wide,630,690)
+df_wide$REDE <- calc_Band(df_wide,705,745)
+df_wide$NIR <- calc_Band(df_wide,770,895)
+df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
+df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
+df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
+
+#write csv file
+out<-cbind(df_wide$full,master$Plot,master$Treat,df_wide$CBLUE,df_wide$BLUE,df_wide$GRN,df_wide$YLW,df_wide$RED,df_wide$REDE,df_wide$NIR,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','Plot','Treat','CBLUE','BLUE','GREEN','YELLOW','RED','REDEDGE','NIR','NDVI','CI1','CI2')
+write.csv(out,paste(github_dir,'/data/Level1/ASD_Bands_Indices_Plot.csv',sep=''),row.names=FALSE,col.names=TRUE)
+
+
+
 #######UAS RESONON##############################
 master <- read.csv2(paste(github_dir,'/data/UAS/Entire_Plot/Resonon_Datasheet_EntirePlot.csv',sep=''),sep=',',header=T)
 dataset <- data.frame()
@@ -144,7 +168,7 @@ df_wide <- dataset %>% select(wavelength, reflectance, full) %>%
 #Bands & Chlorophyll
 df_wide$CBLUE <- calc_Band(df_wide,399.47,450.64)
 df_wide$BLUE <- calc_Band(df_wide,450.64,510.67)
-df_wide$GRN <- calc_Band(df_wide,510.67,5879.53)
+df_wide$GRN <- calc_Band(df_wide,510.67,579.85)
 df_wide$YLW <- calc_Band(df_wide,584.07,624.34)
 df_wide$RED <- calc_Band(df_wide,630.73,690.72)
 df_wide$REDE <- calc_Band(df_wide,705.82,744.84)

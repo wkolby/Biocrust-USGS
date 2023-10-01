@@ -96,6 +96,25 @@ ggplot(merge, aes(x=asd, y=headwall,color=Type)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Scatterplot_ASD_Headwall_Treatment.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
+#####ASD############################################################################################################
+#open data files
+asd_plot <- read.csv2(paste(github_dir,'/data/Level1/',"ASD_Bands_Indices_Plot.csv",sep=''),sep=',',header=T)
+asd_plot_longer <- asd_plot %>% pivot_longer(cols = 4:13,
+                                       names_to = "Index", 
+                                       values_to = "Val")
+#Indices
+asd_plot_longer$Val<-as.numeric(asd_plot_longer$Val)
+asd_plot_longer<-subset(asd_plot_longer, Index %in% c('BLUE','GREEN','RED','REDEDGE','NIR'))
+
+ggplot(asd_plot_longer, aes(x=reorder(Index,Val), y=Val, fill=Treat)) + 
+  geom_boxplot() +
+  scale_fill_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
+  labs(y='Reflectance',x='')+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Box_ASD_Reflectance_Treat.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
 
 #####Resonon############################################################################################################
 #open data files
@@ -116,6 +135,21 @@ ggplot(reson_longer, aes(x=reorder(Index,Val), y=Val, fill=Treat)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Box_Resonon_Reflectance_Treat.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
+######Micasense###########################################################################################################
+#open data files
+mica <- read.csv2(paste(github_dir,'/data/Level1/',"Micasense.csv",sep=''),sep=',',header=T)
+#Indices
+mica$Val<-as.numeric(mica$Val)
+mica<-subset(mica, Wavelength %in% c('Blue','Green','Red','Red Edge','NIR'))
+
+ggplot(mica, aes(x=reorder(Wavelength,Val), y=Val, fill=Treat)) + 
+  geom_boxplot() +
+  scale_fill_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
+  labs(y='Reflectance',x='')+
+  theme_bw()+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Box_MicaSense_Reflectance_Treat.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 ######WorldView3###########################################################################################################
 #open data files
