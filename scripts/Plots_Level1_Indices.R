@@ -77,7 +77,6 @@ ggplot(asdB2, aes(x=reorder(Type,NDVI), y=NDVI, fill=Type)) +
   theme_bw()
 ggsave(paste(github_dir,'/figures/',"Box_ASD_B2_NDVI_byTreatment.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
-
 #########Scatterplot#############################################
 merge <- data.frame()
 merge <-cbind(headB2$Type,headB2$Treat,asdB2$NDVI,headB2$NDVI)
@@ -98,21 +97,24 @@ ggplot(merge, aes(x=asd, y=headwall,color=Type)) +
 ggsave(paste(github_dir,'/figures/',"Scatterplot_ASD_Headwall_Treatment.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 
-######Micasense###########################################################################################################
+#####Resonon############################################################################################################
 #open data files
-mica <- read.csv2(paste(github_dir,'/data/Level1/',"Micasense.csv",sep=''),sep=',',header=T)
+reson <- read.csv2(paste(github_dir,'/data/Level1/',"RESONON_Bands_Indices_Plot.csv",sep=''),sep=',',header=T)
+reson_longer <- reson %>% pivot_longer(cols = 4:13,
+               names_to = "Index", 
+               values_to = "Val")
 #Indices
-mica$Val<-as.numeric(mica$Val)
-mica<-subset(mica, Wavelength %in% c('Blue','Green','Red','Red Edge','NIR'))
+reson_longer$Val<-as.numeric(reson_longer$Val)
+reson_longer<-subset(reson_longer, Index %in% c('BLUE','GREEN','RED','REDEDGE','NIR'))
 
-ggplot(mica, aes(x=reorder(Wavelength,Val), y=Val, fill=Treat)) + 
+ggplot(reson_longer, aes(x=reorder(Index,Val), y=Val, fill=Treat)) + 
   geom_boxplot() +
   scale_fill_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
   labs(y='Reflectance',x='')+
   theme_bw()+
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Box_MicaSense_Reflectance_Treat.png",sep=""),dpi=300,width=180,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Resonon_Reflectance_Treat.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 
 ######WorldView3###########################################################################################################
