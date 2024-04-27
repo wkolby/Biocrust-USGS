@@ -8,9 +8,10 @@ library(RColorBrewer)
 
 #####ASD############################################################################################################
 #open data files
-asd <- read.csv2(paste(github_dir,'/data/Level1/',"ASD_Chlorophyll_Indices_Full.csv",sep=''),sep=',',header=T)
+asd <- read.csv2(paste(github_dir,'/data/Level1/',"ASD_Indices_Full.csv",sep=''),sep=',',header=T)
 #Indices
 asd$NDVI<-as.numeric(asd$NDVI)
+asd$NDWI<-as.numeric(asd$NDWI)
 asd$CI1<-as.numeric(asd$CI1)
 asd$CI2<-as.numeric(asd$CI2)
 
@@ -25,27 +26,62 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=reorder(Type,NDV
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Chlorophyll_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
 
-ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=reorder(Type,NDVI), y=NDVI, fill=Type)) + 
+trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed')
+asd$Type <- factor(asd$Type,levels=c("LCY","DCY","LCN","MSS"))
+ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Type, y=NDVI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(values=c('red3','green3','cyan2','purple'))+
+  scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  facet_wrap(~Treat)+
+  facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
+  scale_x_discrete(labels=c('LtCy','DkCy','Lichen','Moss'))+
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Chlorophyll_byFunc_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
 
-ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=reorder(Treat,NDVI), y=NDVI, fill=Treat)) + 
+trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed')
+asd$Type <- factor(asd$Type,levels=c("LCY","DCY","LCN","MSS"))
+ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Type, y=NDWI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
+  scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  facet_wrap(~Type)+
+  facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
+  scale_x_discrete(labels=c('LtCy','DkCy','Lichen','Moss'))+
+  labs(y='Normalized Water Index',x='')+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 18))
+ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Water_byFunc_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+
+typ_names=c('LCY' = 'LtCy','DCY' = 'DkCy','LCN' = 'Lichen','MSS' = 'Moss')
+asd$Treat <- factor(asd$Treat,levels=c("CC","CW","LC","LW"))
+ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Treat, y=NDVI, fill=Treat)) + 
+  geom_boxplot() +
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+  facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
+  scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Chlorophyll_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+
+typ_names=c('LCY' = 'LtCy','DCY' = 'DkCy','LCN' = 'Lichen','MSS' = 'Moss')
+asd$Treat <- factor(asd$Treat,levels=c("CC","CW","LC","LW"))
+ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Treat, y=NDWI, fill=Treat)) + 
+  geom_boxplot() +
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
+  facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
+  scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
+  labs(y='Normalized Water Index',x='')+
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 18))
+ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Water_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+
 
 #####Headwall############################################################################################################
 #open data files
@@ -59,7 +95,7 @@ head$CI2<-as.numeric(head$CI2)
 ggplot(subset(head, Type %in% c('LCY','DCY','MSS')), aes(x=reorder(Type,NDVI), y=NDVI, fill=Type)) + 
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  scale_fill_manual(values=c('red3','cyan2','purple'))+
+  scale_fill_manual(name='Func Type', values=c('red3','cyan2','purple'),labels=c("LtCy","DkCy","Moss"))+
   #facet_wrap(~Treat)+
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
@@ -68,32 +104,36 @@ ggplot(subset(head, Type %in% c('LCY','DCY','MSS')), aes(x=reorder(Type,NDVI), y
 ggsave(paste(github_dir,'/figures/',"Box_Headwall_Chlorophyll_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
 
 headB2<-subset(head, Type %in% c('LCY','DCY','MSS'))
-
-ggplot(headB2, aes(x=reorder(Type,NDVI), y=NDVI, fill=Type)) + 
+trt_names=c('CC' = 'Control','LW' = 'AltP + Warmed')
+headB2$Type <- factor(headB2$Type,levels=c("LCY","DCY","MSS"))
+ggplot(headB2, aes(x=Type, y=NDVI, fill=Type)) + 
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  scale_fill_manual(values=c('red3','cyan2','purple'))+
-  facet_wrap(~Treat)+
+  scale_fill_manual(name='Func Type', values=c('red3','cyan2','purple'),labels=c("LtCy","DkCy","Moss"))+
+  scale_x_discrete(labels=c('LtCy','DkCy','Moss'))+
+  facet_wrap(~Treat,labeller = as_labeller(trt_names), ncol=1)+
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Box_Headwall_B2_Chlorophyll_byFunc_FuncLevel.png",sep=""),dpi=300,width=270,height=180,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Headwall_B2_Chlorophyll_byFunc_FuncLevel.png",sep=""),dpi=300,width=180,height=300,units='mm')
 
 asdB2<-subset(asd, Plot %in% c('B2'))
 asdB2<-subset(asdB2, Treat %in% c('CC','LW'))
 asdB2<-subset(asdB2, Type %in% c('LCY','DCY','MSS'))
-
-ggplot(asdB2, aes(x=reorder(Type,NDVI), y=NDVI, fill=Type)) + 
+trt_names=c('CC' = 'Control','LW' = 'AltP + Warmed')
+asdB2$Type <- factor(asdB2$Type,levels=c("LCY","DCY","MSS"))
+ggplot(asdB2, aes(x=Type, y=NDVI, fill=Type)) + 
   geom_boxplot() +
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  scale_fill_manual(values=c('red3','cyan2','purple'))+
-  facet_wrap(~Treat)+
+  scale_fill_manual(name='Func Type', values=c('red3','cyan2','purple'),labels=c("LtCy","DkCy","Moss"))+
+  scale_x_discrete(labels=c('LtCy','DkCy','Moss'))+
+  facet_wrap(~Treat,labeller = as_labeller(trt_names), ncol=1)+
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_B2_Chlorophyll_byFunc_FuncLevel.png",sep=""),dpi=300,width=270,height=180,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_B2_Chlorophyll_byFunc_FuncLevel.png",sep=""),dpi=300,width=180,height=300,units='mm')
 
 #####Resonon############################################################################################################
 #open data files

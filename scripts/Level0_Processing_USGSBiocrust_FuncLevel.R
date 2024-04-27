@@ -88,19 +88,20 @@ ggplot(subset(soil_mean_std, treat %in% c('CC','CW','LW','LC')), aes(x=wavelengt
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/Line_FieldSpec_Hyperspectra_Full_Soil_FuncLevel.png',sep=''),dpi=300,width=180,height=120,units='mm')
 
-
+trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed')
+dataset_mean_std$type <- factor(dataset_mean_std$type,levels=c("LCY","DCY","LCN","MSS"))
 ggplot(subset(dataset_mean_std, treat %in% c('CC','CW','LW','LC')), aes(x=wavelength,y=mean,group=type,color=type)) +
   geom_line(show.legend = T,linewidth=.5,linetype="solid") +
-  scale_color_manual(values=c('red3','green3','cyan2','purple'))+
   geom_ribbon(aes(y = mean, ymin = mean - sd, ymax = mean + sd, fill = type), alpha = .2) +
-  scale_fill_manual(values=c('red3','green3','cyan2','purple'))+
-  facet_wrap(~treat)+
+  facet_wrap(~treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_y_continuous("Reflectance") +
   scale_x_continuous("Wavelength (nm)",limits = c(400,2400), breaks = seq(400,2400,200)) +
+  scale_color_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
+  scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
-ggsave(paste(github_dir,'/figures/Line_FieldSpec_Hyperspectra_Full_ByFunc_FuncLevel.png',sep=''),dpi=300,width=180,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/Line_FieldSpec_Hyperspectra_Full_ByFunc_FuncLevel.png',sep=''),dpi=300,width=240,height=120,units='mm')
 
 ggplot(subset(dataset_mean_std, treat %in% c('CC','CW','LW','LC')), aes(x=wavelength,y=mean,group=treat,color=treat)) +
   geom_line(show.legend = T,linewidth=.5,linetype="solid") +
@@ -161,13 +162,14 @@ df_wide <- dataset %>% select(wavelength, reflectance, full) %>%
 
 #Chlorophyll
 df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
+df_wide$NDWI <- calc_VI(df_wide, 1850, 1850, 1925, 1925)
 df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
 df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
 
 #write csv file
-out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
-colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','CI1','CI2')
-write.csv(out,paste(github_dir,'/data/Level1/ASD_Chlorophyll_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
+out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','NDWI','CI1','CI2')
+write.csv(out,paste(github_dir,'/data/Level1/ASD_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
 
 #######UAS HEADWALL##############################
 master <- read.csv2(paste(github_dir,'/data/Headwall/Headwall_Datasheet_021422_021522.csv',sep=''),sep=',',header=T)

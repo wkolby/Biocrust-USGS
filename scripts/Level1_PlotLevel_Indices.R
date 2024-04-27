@@ -8,8 +8,7 @@ setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
 github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
 
 #######################################PLOT LEVEL###################################################################
-
-########################################BioCrust Cover######################################################################
+########################################BioCrust Cover##############################################################
 #open data files
 Cover_long <- read.csv2(paste(github_dir,'/data/Level1/',"BioCrust_Cover_Plot.csv",sep=''),sep=',',header=T)
 Cover_long$Val<-as.numeric(Cover_long$Val)
@@ -34,15 +33,15 @@ Cover_Stats = Cover_long %>% group_by(Treat2,Type2) %>%
 #Stacked Barplot
 ggplot(Cover_Stats, aes(x = Treat2, y = Cover_Mean, fill=Type2)) +
   geom_bar(stat="identity",position='stack',color='black') +
-  scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('L. Cyano','D. Cyano','Lichen','Moss'))+
+  scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
   scale_y_continuous("Percent Cover",expand = c(0, 0), limits = c(0, 60),breaks=c(0,20,40,60,80,100)) +
-  scale_x_discrete("",labels=c('Control', 'Alt. Precip.', 'Warmed', 'Alt. Precip. + \nWarmed'),guide = guide_axis(angle = 45))+
-  labs(title="",fill = "Biocrust Type")+
+  scale_x_discrete("",labels=c('Control', 'AltP', 'Warmed', 'AltP + \nWarmed'),guide = guide_axis(angle = 45))+
+  labs(title="",fill = "Func Type")+
   theme_bw() +
-  theme(legend.position = 'right',legend.text=element_text(size=20),legend.title=element_text(size=24)) +
-  theme(legend.background = element_rect(linetype="solid", colour ="black"))+
+  theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
+  theme(legend.background = element_rect(colour = NA))+
   theme(text = element_text(size = 24))
-ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=300,height=240,units='mm')
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=150,height=120,units='mm')
 
 
 ########################################MERGED######################################################################
@@ -185,27 +184,76 @@ data_RED<-cbind(RED,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 data_NIR<-cbind(NIR,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 data_NDVI<-cbind(RED[1:4],NDVI,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 
+ggplot(data_NDVI, aes(x=FieldSpec, y=LCY$Val)) +
+  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
+  stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
+  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  labs(y='LtCy Percent Cover',x='Normalized Chlorophyll Index')+
+  theme_bw()+
+  theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_ASD_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
+ggplot(data_NDVI, aes(x=MicaSense, y=LCY$Val)) +
+  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
+  stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
+  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  labs(y='LtCy Percent Cover',x='Normalized Chlorophyll Index')+
+  theme_bw()+
+  theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_MicaSense_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
+ggplot(data_NDVI, aes(x=Resonon, y=LCY$Val)) +
+  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
+  stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
+  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  labs(y='LtCy Percent Cover',x='Normalized Chlorophyll Index')+
+  theme_bw()+
+  theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_Resonon_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
+ggplot(data_NDVI, aes(x=WorldView3, y=LCY$Val)) +
+  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
+  stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
+  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  labs(y='LtCy Percent Cover',x='Normalized Chlorophyll Index')+
+  theme_bw()+
+  theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_WorldView3_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
+#############################################################################################################################################
 ggplot(data_RED, aes(x=FieldSpec, y=LCY$Val)) +
   geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
   geom_smooth(method=lm,aes(group = Index))+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),geom = "label",show.legend = FALSE)+
-  labs(y='LCY Cover (%)',x='RED Reflectance')+
+  labs(y='LtCy Percent Cover',x='RED Reflectance')+
   theme_bw()+
   theme(legend.position = c(0.8, 0.2),legend.title = element_blank(),legend.text=element_text(size=16)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_RED_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_RED_ASD_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
-ggplot(data_NDVI, aes(x=FieldSpec, y=LCY$Val)) +
+ggplot(data_RED, aes(x=WorldView3, y=LCY$Val)) +
   geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
   geom_smooth(method=lm,aes(group = Index))+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),geom = "label",show.legend = FALSE)+
-  labs(y='LCY Cover (%)',x='Normalized Chlorophyll Index')+
+  labs(y='LtCy Percent Cover',x='RED Reflectance')+
   theme_bw()+
-  #theme(legend.position = c(.8,.8),legend.title = element_blank(),legend.text=element_text(size=16)) +
+  theme(legend.position = c(0.8, 0.2),legend.title = element_blank(),legend.text=element_text(size=16)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_RED_WorldView3_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 ggplot(data_NIR, aes(x=FieldSpec, y=LCY$Val)) +
   scale_color_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
@@ -242,7 +290,6 @@ ggplot(data_NIR, aes(x=Resonon, y=LCY$Val)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NIR_Reson_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
-
 
 ggplot(data_NIR, aes(x=WorldView3, y=LCY$Val)) +
   scale_color_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
