@@ -157,12 +157,13 @@ df_wide$RED <- calc_Band(df_wide,630,690)
 df_wide$REDE <- calc_Band(df_wide,705,745)
 df_wide$NIR <- calc_Band(df_wide,770,895)
 df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
+df_wide$NDWI <- calc_VI(df_wide, 1850, 1850, 1925, 1925)
 df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
 df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
 
 #write csv file# NEED TO FIX
-out<-cbind(df_wide$full,df_wide$CBLUE,df_wide$BLUE,df_wide$GRN,df_wide$YLW,df_wide$RED,df_wide$REDE,df_wide$NIR,df_wide$NDVI,df_wide$CI1,df_wide$CI2)
-colnames(out)<-c('ID','CBLUE','BLUE','GREEN','YELLOW','RED','REDEDGE','NIR','NDVI','CI1','CI2')
+out<-cbind(df_wide$full,df_wide$CBLUE,df_wide$BLUE,df_wide$GRN,df_wide$YLW,df_wide$RED,df_wide$REDE,df_wide$NIR,df_wide$NDVI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','CBLUE','BLUE','GREEN','YELLOW','RED','REDEDGE','NIR','NDVI','NDWI','CI1','CI2')
 write.csv(out,paste(github_dir,'/data/Level1/ASD_Bands_Indices_Plot.csv',sep=''),row.names=FALSE,col.names=TRUE)
 
 
