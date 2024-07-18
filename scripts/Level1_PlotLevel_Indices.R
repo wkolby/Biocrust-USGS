@@ -31,6 +31,7 @@ Cover_Stats = Cover_long %>% group_by(Treat2,Type2) %>%
 # ggsave(paste(github_dir,'/figures/',"Box_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=240,height=120,units='mm')
 
 #Stacked Barplot
+Cover_Stats$Type2 <- factor(Cover_Stats$Type2,levels=c("LCY","DCY","LCN","MSS"))
 ggplot(Cover_Stats, aes(x = Treat2, y = Cover_Mean, fill=Type2)) +
   geom_bar(stat="identity",position='stack',color='black') +
   scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
@@ -314,7 +315,7 @@ ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NIR_Mica_PlotLevel.png",sep
 
 ggplot(data_NIR, aes(x=Resonon, y=LCY$Val)) +
   scale_color_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
-  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_point(aes(color=Treat),size=log(MSS$Val)*2)+
   geom_smooth(method=lm,aes(group = Index))+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),geom = "label",show.legend = FALSE)+
   labs(y='LCY Cover (%)',x='NIR Reflectance')+
@@ -322,7 +323,7 @@ ggplot(data_NIR, aes(x=Resonon, y=LCY$Val)) +
   #theme(legend.position = c(0.8, 0.2),legend.title = element_blank(),legend.text=element_text(size=16)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NIR_Reson_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NIR_Resonon_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 ggplot(data_NIR, aes(x=WorldView3, y=LCY$Val)) +
   scale_color_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
