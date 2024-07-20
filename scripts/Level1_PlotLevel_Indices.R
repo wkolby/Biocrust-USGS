@@ -47,8 +47,8 @@ ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep="
 
 ########################################MERGED######################################################################
 #open data files
-Merged <- read.csv2(paste(github_dir,'/data/Level1/',"Merged_Indices_Plot.csv",sep=''),sep=',',header=T)
-Merged_long <- Merged %>% pivot_longer(cols = 5:14,
+Merged <- read.csv2(paste(github_dir,'/data/Level1/',"Merged_Indices_Plot_V2.csv",sep=''),sep=',',header=T)
+Merged_long <- Merged %>% pivot_longer(cols = 5:15,
                                        names_to = "Index", 
                                        values_to = "Val")
 #Indices
@@ -184,6 +184,23 @@ NDVI<-(NIR[,5:8]-RED[,5:8])/(NIR[,5:8]+RED[,5:8])
 data_RED<-cbind(RED,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 data_NIR<-cbind(NIR,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 data_NDVI<-cbind(RED[1:4],NDVI,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
+
+#open data files
+xt2_plot <- read.csv2(paste(github_dir,'/data/Level1/',"XT2_Temp_Plot.csv",sep=''),sep=',',header=T)
+xt2_plot$LST<-as.numeric(xt2_plot$LSTindex)
+ggplot(data_NDVI, aes(x=xt2_plot$LST, y=LCY$Val)) +
+  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
+  stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=0,label.y=65,size=8)+
+  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  scale_x_continuous('Surface Temperature Index',limits = c(-.025,1.025), breaks = seq(-.25,1.25,.25)) +
+  scale_y_continuous('LtCy Percent Cover',limits = c(-5,70), breaks = seq(-10,70,10)) +
+  theme_bw()+
+  theme(legend.position = c(.825,.23),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_LST_XT2_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
 
 #open data files
 asd_plot <- read.csv2(paste(github_dir,'/data/Level1/',"ASD_Bands_Indices_Plot.csv",sep=''),sep=',',header=T)

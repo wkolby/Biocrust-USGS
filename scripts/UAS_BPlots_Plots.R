@@ -1,0 +1,124 @@
+setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
+github_dir='/Users/wksmith/Documents/GitHub/Biocrust-USGS/'
+data_dir='/Users/wksmith/Data/USGS_Biocrust_S22/'
+
+library(tidyverse)
+library(raster)
+library(sf)
+library(dplyr)
+
+###Plots########################################################################
+PlotLevel_Box<-function(D1,D2,D3,D4,clrs,filename) {
+  png(file=filename,width=4500,height=4500,res=600)
+  par(oma=c(1,8,1,1))
+  
+  ###STATS###
+  #plot 1
+  means<-c(mean(as.vector(as.matrix(D1)),na.rm=T),mean(as.vector(as.matrix(D2)),na.rm=T),mean(as.vector(as.matrix(D3)),na.rm=T),mean(as.vector(as.matrix(D4)),na.rm=T))
+  stdvs<-c(sd(as.vector(as.matrix(D1)),na.rm=T),sd(as.vector(as.matrix(D2)),na.rm=T),sd(as.vector(as.matrix(D3)),na.rm=T),sd(as.vector(as.matrix(D4)),na.rm=T))
+  
+  #####Plot 1
+  par(mar=c(2,0,1,0))
+  boxplot(as.vector(as.matrix(D1)),as.vector(as.matrix(D2)),as.vector(as.matrix(D3)),as.vector(as.matrix(D4)),col=clrs,ylim = c(700, 800),varwidth=F,outline=FALSE,axes=FALSE,xaxs="i",yaxs="i")
+  points(x=c(1,2,3,4),y=means,type="p",cex=2.5,pch=7,lwd=3,col='black')
+  text(x=c(1,2,3,4),y=c(means[1]+10,means[2]+10,means[2]+10,means[2]+10),paste(formatC(means,format='f',digits=1)),adj=0.5,font=2,cex=1.25,col='black')
+  text(x=c(1,2,3,4),y=c(means[1]+5,means[2]+5,means[2]+5,means[2]+5),paste("+/-",formatC(stdvs,format='f',digits=1)),adj=0.5,font=2,cex=1.25,col='black')
+  
+  #EXTRA
+  mtext(2, text=expression(bold(paste('Aridity Index (mm mm'^{-1},')'))),line=5,cex=3,font=2.2,col='black')
+  legend(1.1,.825,fill=clrs,c('Global','Western US'),bty="n",cex=2.8,text.font=2)
+  #axis(2, at = seq(-.1,.8,.1), cex.axis=2.8, font.axis=2, tck=0.015, las=2)
+  axis(3, at = c(0,3), tck=0.015, labels=FALSE)
+  axis(1, at = c(0,3), tck=0.015, labels=FALSE)
+  #axis(4, at = seq(-.1,.8,.1), tck=0.015, labels=FALSE)
+  
+  return(means)
+  
+  dev.off()
+}
+
+################################################################################
+##############################################MAIN##############################
+#Open and process data
+thermal2 <- raster(paste0(data_dir,'thermal/20220214_Flight2_XT2_IR/Biocrust_Flight2_XT2_IR_Ortho_Metashape_utm83_clipped.tif'))
+B1_C <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B1_Control.shp'))
+B2_C <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B2_Control.shp'))
+B3_C <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B3_Control.shp'))
+B4_C <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B4_Control.shp'))
+B5_C <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B5_Control.shp'))
+
+B1_A <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B1_AlteredP.shp'))
+B2_A <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B2_AlteredP.shp'))
+B3_A <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B3_AlteredP.shp'))
+B4_A <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B4_AlteredP.shp'))
+B5_A <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B5_AlteredP.shp'))
+
+B1_WA <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B1_WarmAltP.shp'))
+B2_WA <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B2_WarmAltP.shp'))
+B3_WA <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B3_WarmAltP.shp'))
+B4_WA <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B4_WarmAltP.shp'))
+B5_WA <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B5_WarmAltP.shp'))
+
+B1_W <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B1_Warmed.shp'))
+B2_W <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B2_Warmed.shp'))
+B3_W <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B3_Warmed.shp'))
+B4_W <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B4_Warmed.shp'))
+B5_W <- st_read(paste0('/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/BPlots_B5_Warmed.shp'))
+
+thermal2.B1_C <- crop(raster::mask(thermal2, B1_C),B1_C)
+thermal2.B2_C <- crop(raster::mask(thermal2, B2_C),B2_C)
+thermal2.B3_C <- crop(raster::mask(thermal2, B3_C),B3_C)
+thermal2.B4_C <- crop(raster::mask(thermal2, B4_C),B4_C)
+thermal2.B5_C <- crop(raster::mask(thermal2, B5_C),B5_C)
+
+thermal2.B1_A <- crop(raster::mask(thermal2, B1_A),B1_A)
+thermal2.B2_A <- crop(raster::mask(thermal2, B2_A),B2_A)
+thermal2.B3_A <- crop(raster::mask(thermal2, B3_A),B3_A)
+thermal2.B4_A <- crop(raster::mask(thermal2, B4_A),B4_A)
+thermal2.B5_A <- crop(raster::mask(thermal2, B5_A),B5_A)
+
+thermal2.B1_WA <- crop(raster::mask(thermal2, B1_WA),B1_WA)
+thermal2.B2_WA <- crop(raster::mask(thermal2, B2_WA),B2_WA)
+thermal2.B3_WA <- crop(raster::mask(thermal2, B3_WA),B3_WA)
+thermal2.B4_WA <- crop(raster::mask(thermal2, B4_WA),B4_WA)
+thermal2.B5_WA <- crop(raster::mask(thermal2, B5_WA),B5_WA)
+
+thermal2.B1_W <- crop(raster::mask(thermal2, B1_W),B1_W)
+thermal2.B2_W <- crop(raster::mask(thermal2, B2_W),B2_W)
+thermal2.B3_W <- crop(raster::mask(thermal2, B3_W),B3_W)
+thermal2.B4_W <- crop(raster::mask(thermal2, B4_W),B4_W)
+thermal2.B5_W <- crop(raster::mask(thermal2, B5_W),B5_W)
+
+#Check data
+plot(thermal2.B1_C,col = heat.colors(50))
+plot(thermal2.B2_C,col = heat.colors(50))
+plot(thermal2.B3_C,col = heat.colors(50))
+plot(thermal2.B4_C,col = heat.colors(50))
+plot(thermal2.B5_C,col = heat.colors(50))
+
+plot(thermal2.B1_A,col = heat.colors(50))
+plot(thermal2.B2_A,col = heat.colors(50))
+plot(thermal2.B3_A,col = heat.colors(50))
+plot(thermal2.B4_A,col = heat.colors(50))
+plot(thermal2.B5_A,col = heat.colors(50))
+
+plot(thermal2.B1_WA,col = heat.colors(50))
+plot(thermal2.B2_WA,col = heat.colors(50))
+plot(thermal2.B3_WA,col = heat.colors(50))
+plot(thermal2.B4_WA,col = heat.colors(50))
+plot(thermal2.B5_WA,col = heat.colors(50))
+
+plot(thermal2.B1_W,col = heat.colors(50))
+plot(thermal2.B2_W,col = heat.colors(50))
+plot(thermal2.B3_W,col = heat.colors(50))
+plot(thermal2.B4_W,col = heat.colors(50))
+plot(thermal2.B5_W,col = heat.colors(50))
+
+
+##########BOX PLOT##############################################################
+#Plots
+B1_means<-PlotLevel_Box(thermal2.B1_C,thermal2.B1_A,thermal2.B1_WA,thermal2.B1_W,c('white','cyan','purple','red'),paste0(github_dir,'Figures/B1_Thermal_Flight2_Box.png'))
+B2_means<-PlotLevel_Box(thermal2.B2_C,thermal2.B2_A,thermal2.B2_WA,thermal2.B2_W,c('white','cyan','purple','red'),paste0(github_dir,'Figures/B2_Thermal_Flight2_Box.png'))
+B3_means<-PlotLevel_Box(thermal2.B3_C,thermal2.B3_A,thermal2.B3_WA,thermal2.B3_W,c('white','cyan','purple','red'),paste0(github_dir,'Figures/B3_Thermal_Flight2_Box.png'))
+B4_means<-PlotLevel_Box(thermal2.B4_C,thermal2.B4_A,thermal2.B4_WA,thermal2.B4_W,c('white','cyan','purple','red'),paste0(github_dir,'Figures/B4_Thermal_Flight2_Box.png'))
+B5_means<-PlotLevel_Box(thermal2.B5_C,thermal2.B5_A,thermal2.B5_WA,thermal2.B5_W,c('white','cyan','purple','red'),paste0(github_dir,'Figures/B5_Thermal_Flight2_Box.png'))

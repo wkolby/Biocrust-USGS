@@ -8,7 +8,8 @@ Created on 03/12/2015
 import gdal
 import numpy as np
 from matplotlib import rc
-from matplotlib.colors import rgb2hex
+from matplotlib.colors import Normalize,rgb2hex
+from mpl_toolkits.axes_grid1.anchored_artists import AnchoredSizeBar
 from matplotlib import cm
 import matplotlib.pyplot as plt
 from matplotlib.colors import from_levels_and_colors
@@ -48,30 +49,77 @@ def figure_rgb(src,filename):
     ax.set_xmargin(0.05)
     ax.set_ymargin(0.10)
         
-    #plt.imshow(rgb, transform=crs)
+    #Plot
     plt.imshow(rgb, extent=[minx,maxx,miny,maxy], transform=crs)
-    plt.axis('off')
+    #plt.axis('off')
     
     ###EXTRAs
     d='/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/'
     print(d)
-    #Bplots
-    B1_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.4)
+    #Bplots Control
+    B1_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(B1_Control)
-    B2_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.4)
+    B2_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(B2_Control)
-    #B3_Control=cfeature.ShapelyFeature(Reader(d+'B3_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B3_Control)
-    #B4_Control=cfeature.ShapelyFeature(Reader(d+'B4_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B4_Control)
-    #B5_Control=cfeature.ShapelyFeature(Reader(d+'B5_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B5_Control)
+    B3_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_Control)
+    B4_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_Control)
+    B5_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_Control)
+    #Bplots Warmed
+    B1_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_Warmed)
+    B2_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_Warmed)
+    B3_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_Warmed)
+    B4_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_Warmed)
+    B5_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_Warmed)
+    #Bplots Warmed AlteredP
+    B1_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_WarmAltP)
+    B2_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_WarmAltP)
+    B3_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_WarmAltP)
+    B4_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_WarmAltP)
+    B5_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_WarmAltP)
+    #Bplots Altered P
+    B1_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_AlteredP)
+    B2_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_AlteredP)
+    B3_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_AlteredP)
+    B4_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_AlteredP)
+    B5_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_AlteredP)
+    
+    
+    ax.add_feature(B5_Control)
     #Border
-    bplots=cfeature.ShapelyFeature(Reader(d+'BPlots_utm83.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=1)
+    bplots=cfeature.ShapelyFeature(Reader(d+'BPlots_utm83.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(bplots)
     
+    # Add scale bar
+    scalebar = AnchoredSizeBar(ax.transData,
+                           5, '5 m', 'lower right', 
+                           pad=0.1,
+                           color='black',
+                           frameon=False,
+                           size_vertical=1)
+
+    ax.add_artist(scalebar)
+    
+    
     ###Save Image###
-    plt.savefig(filename,bbox_inches='tight',dpi=600)
+    plt.savefig(filename,bbox_inches='tight',dpi=600) 
     plt.show()
     plt.close()
     
@@ -100,36 +148,69 @@ def figure_mesh(fid,scale,clrs,levels,extnd,filename):
     print([minx, maxx, miny, maxy])
     
     ###PLOT###
-    #Setup Basemap with projection
+    #Setup projection
     crs=ccrs.UTM('12N')
     ax = plt.axes(projection=crs)
     ax.set_extent([minx,maxx,miny,maxy],crs=crs)
-    ax.set_xmargin(0.05)
-    ax.set_ymargin(0.10)
-    ax.axis('off') #turn off border
+    ax.set_xmargin(30)
+    ax.set_ymargin(30)
+    #ax.axis('off') #turn off border
+    
     #Set colormap
     cmap, norm = from_levels_and_colors(levels, clrs, extend=extnd)
     #Plot colormesh
     plt.pcolormesh(xGrid,yGrid,data,transform=crs,cmap=cmap,norm=norm)
-    
-   
-    
+
     ###EXTRAs
     d='/Users/wksmith/Data/USGS_Biocrust_S22/Boundaries/'
     print(d)
-    #Bplots
-    B1_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.4)
+    #Bplots Control
+    B1_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(B1_Control)
-    B2_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.4)
+    B2_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(B2_Control)
-    #B3_Control=cfeature.ShapelyFeature(Reader(d+'B3_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B3_Control)
-    #B4_Control=cfeature.ShapelyFeature(Reader(d+'B4_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B4_Control)
-    #B5_Control=cfeature.ShapelyFeature(Reader(d+'B5_Control.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=1)
-    #ax.add_feature(B5_Control)
+    B3_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_Control)
+    B4_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_Control)
+    B5_Control=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_Control.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_Control)
+    #Bplots Warmed
+    B1_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_Warmed)
+    B2_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_Warmed)
+    B3_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_Warmed)
+    B4_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_Warmed)
+    B5_Warmed=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_Warmed.shp').geometries(),crs,edgecolor='red',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_Warmed)
+    #Bplots Warmed AlteredP
+    B1_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_WarmAltP)
+    B2_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_WarmAltP)
+    B3_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_WarmAltP)
+    B4_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_WarmAltP)
+    B5_WarmAltP=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_WarmAltP.shp').geometries(),crs,edgecolor='magenta',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_WarmAltP)
+    #Bplots Altered P
+    B1_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B1_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B1_AlteredP)
+    B2_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B2_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B2_AlteredP)
+    B3_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B3_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B3_AlteredP)
+    B4_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B4_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B4_AlteredP)
+    B5_AlteredP=cfeature.ShapelyFeature(Reader(d+'BPlots_B5_AlteredP.shp').geometries(),crs,edgecolor='cyan',facecolor='none',linewidth=.5)
+    ax.add_feature(B5_AlteredP)
+    
     #Border
-    bplots=cfeature.ShapelyFeature(Reader(d+'BPlots_utm83.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=1)
+    bplots=cfeature.ShapelyFeature(Reader(d+'BPlots_utm83.shp').geometries(),crs,edgecolor='black',facecolor='none',linewidth=.5)
     ax.add_feature(bplots)
     
     ###Save Image###
@@ -137,7 +218,24 @@ def figure_mesh(fid,scale,clrs,levels,extnd,filename):
     plt.savefig(filename,bbox_inches='tight',dpi=600)
     plt.show()
     plt.close()
+
+def figure_colorbar(clrs,levels,extnd,lab,filename):
+    font = {'weight' : 'bold'}
+    rc('font', **font)
+    rc('ytick', labelsize=12)
     
+    #set up plot area
+    fig, ax = plt.subplots(figsize=(6, .4))
+    #Set colormap
+    cmap, norm = from_levels_and_colors(levels, clrs, extend=extnd)
+    print(norm)
+    #Plot
+    cb=fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),cax=ax, orientation='horizontal')
+    cb.set_label(label=lab,size=15,weight='bold')
+    ###Save Image###
+    plt.savefig(filename,bbox_inches='tight',dpi=600)
+    plt.show()
+    plt.close()
 #########################################################################################################
 
 if __name__ == '__main__':
@@ -147,15 +245,18 @@ if __name__ == '__main__':
     ###Plot RGB
     rgb_path=data_dir+'rgb/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_clipped.tif'
     src = rasterio.open(rgb_path)
-    figure_rgb(src,out_dir+'test_rgb.png')
+    figure_rgb(src,out_dir+'BPlots_RGB.png')
     
     ###Plot Thermal
-    scale=1
+    scale=0.1
     extnd='both'
-    levels = np.linspace(650,850,num=50)
-    cmap=cm.get_cmap('plasma',51)
+    levels = np.linspace(65,75,num=25)
+    cmap=cm.get_cmap('magma',26)
     color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
     fid=gdal.Open(data_dir+'thermal/20220214_Flight2_XT2_IR/Biocrust_Flight2_XT2_IR_Ortho_Metashape_utm83_clipped.tif')
-    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'test_thermal.png')
-    
+    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight2.png')
+    levels = np.linspace(65,75,num=25)
+    cmap=cm.get_cmap('magma',26)
+    color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
+    figure_colorbar(color_list, levels, extnd,'Temperature (Celsius)',out_dir+'BPlots_Thermal_Flight2_colorbar.png')
     
