@@ -189,28 +189,28 @@ data_NDVI<-cbind(RED[1:4],NDVI,LCY$Val,DCY$Val,LCN$Val,MSS$Val,PLT$Val)
 xt2_plot <- read.csv2(paste(github_dir,'/data/Level1/',"XT2_Temp_Plot.csv",sep=''),sep=',',header=T)
 xt2_plot$LST<-as.numeric(xt2_plot$LSTindex)
 ggplot(data_NDVI, aes(x=xt2_plot$LST, y=LCY$Val)) +
-  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
   geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=0,label.y=65,size=8)+
-  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_x_continuous('Surface Temperature Index',limits = c(-.025,1.025), breaks = seq(-.25,1.25,.25)) +
   scale_y_continuous('LtCy Percent Cover',limits = c(-5,70), breaks = seq(-10,70,10)) +
   theme_bw()+
-  theme(legend.position = c(.825,.23),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(legend.position = "none") + 
+  #theme(legend.position = c(.825,.23),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_LST_XT2_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
-
 
 #open data files
 asd_plot <- read.csv2(paste(github_dir,'/data/Level1/',"ASD_Bands_Indices_Plot.csv",sep=''),sep=',',header=T)
 asd_plot$NDVI<-as.numeric(asd_plot$NDVI)
 asd_plot$NDWI<-as.numeric(asd_plot$NDWI)
 ggplot(data_NDVI, aes(x=asd_plot$NDVI, y=LCY$Val)) +
-  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
   geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
-  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_x_continuous('Normalized Chlorophyll Index',limits = c(0.125,0.25), breaks = seq(0.125,0.25,.025)) +
   scale_y_continuous('LtCy Percent Cover',limits = c(-5,70), breaks = seq(-10,70,10)) +
   theme_bw()+
@@ -220,14 +220,15 @@ ggplot(data_NDVI, aes(x=asd_plot$NDVI, y=LCY$Val)) +
 ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDVI_ASD_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
 
 ggplot(data_NDVI, aes(x=asd_plot$NDWI, y=LCY$Val)) +
-  geom_point(aes(color=Treat),size=log(DCY$Val+LCN$Val+MSS$Val+PLT$Val)*2)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
   geom_smooth(method=lm,aes(group = Index),color='black',fill='grey')+
   stat_cor(aes(group = Index,label = after_stat(rr.label)),label.x=.14,label.y=-4,size=8)+
-  scale_color_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_x_continuous('Normalized Water Index',limits = c(0.075,0.25), breaks = seq(0.075,0.25,.025)) +
   scale_y_continuous('LtCy Percent Cover',limits = c(-5,70), breaks = seq(-10,70,10)) +
   theme_bw()+
-  theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
+  theme(legend.position = "none") + 
+  #theme(legend.position = c(.83,.78),legend.background = element_blank(), legend.box.background = element_rect(color = 'black'),legend.text=element_text(size=16)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Scatterplot_LCY_NDWI_ASD_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
