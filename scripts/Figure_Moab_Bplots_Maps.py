@@ -132,7 +132,8 @@ def figure_mesh(fid,scale,clrs,levels,extnd,filename):
     band=fid.GetRasterBand(1)
     data=band.ReadAsArray()
     geot=fid.GetGeoTransform()
-    data=np.ma.masked_where(data==0,data)
+    data=np.ma.masked_where(data<-5,data)
+    data=np.ma.masked_where(data==np.nan,data)
     data=data*scale
     
     #Get lat,lon
@@ -245,18 +246,38 @@ if __name__ == '__main__':
     ###Plot RGB
     rgb_path=data_dir+'rgb/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_clipped.tif'
     src = rasterio.open(rgb_path)
-    figure_rgb(src,out_dir+'BPlots_RGB.png')
+    #figure_rgb(src,out_dir+'BPlots_RGB.png')
     
     ###Plot Thermal
-    scale=0.1
+    scale=1
     extnd='both'
-    levels = np.linspace(65,75,num=25)
-    cmap=cm.get_cmap('magma',26)
+    levels = np.linspace(0,1,num=25)
+    cmap=cm.get_cmap('winter',26)
     color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
-    fid=gdal.Open(data_dir+'thermal/20220214_Flight2_XT2_IR/Biocrust_Flight2_XT2_IR_Ortho_Metashape_utm83_clipped.tif')
+    fid=gdal.Open(data_dir+'thermal/20220213_Flight1_XT2_IR/Biocrust_Flight1_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
+    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight1.png')
+    fid=gdal.Open(data_dir+'thermal/20220214_Flight2_XT2_IR/Biocrust_Flight2_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
     figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight2.png')
-    levels = np.linspace(65,75,num=25)
-    cmap=cm.get_cmap('magma',26)
+    fid=gdal.Open(data_dir+'thermal/20220212_Flight3_XT2_IR/Biocrust_Flight3_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
+    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight3.png')
+    fid=gdal.Open(data_dir+'thermal/20220212_Flight4_XT2_IR/Biocrust_Flight4_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
+    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight4.png')
+    levels = np.linspace(0,1,num=25)
+    cmap=cm.get_cmap('winter',26)
     color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
-    figure_colorbar(color_list, levels, extnd,'Temperature (Celsius)',out_dir+'BPlots_Thermal_Flight2_colorbar.png')
+    figure_colorbar(color_list, levels, extnd,'Surface Temperature Index',out_dir+'BPlots_Thermal_Flight2_colorbar.png')
+    
+    ###Plot NDVI
+    scale=1
+    extnd='both'
+    levels = np.linspace(0,0.5,num=25)
+    cmap=cm.get_cmap('PRGn',26)
+    color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
+    fid=gdal.Open(data_dir+'/MicaSense_Dual_Tarp/moab_micasense_ortho_utm83_ndvi_clipped.tif')
+    #figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_NDVI_Micasense.png')
+    levels = np.linspace(0,0.5,num=25)
+    cmap=cm.get_cmap('PRGn',26)
+    color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
+    #figure_colorbar(color_list, levels, extnd,'Chlorophyll Index',out_dir+'BPlots_NDVI_Micasense_colorbar.png')
+    
     
