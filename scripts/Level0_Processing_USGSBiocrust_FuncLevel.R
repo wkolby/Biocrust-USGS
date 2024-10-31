@@ -3,8 +3,8 @@ github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
 library(asdreader)
 library(reshape2)
 library(tidyverse)
-library(tidyr)
-library(dplyr)
+#library(tidyr)
+#library(dplyr)
 library(stringr)
 
 ###FUNCTIONS##################################################################################
@@ -15,6 +15,16 @@ calc_SR <- function(df, a, b, c, d){
   b2_1 <- which.min(abs(c - as.numeric(names(df), options(warn=-1))))   #Identify second band and start range
   b2_2 <- which.min(abs(d - as.numeric(names(df), options(warn=-1))))   #Identify second band and end range
   (rowMeans(df_wide[b1_1:b1_2])/(rowMeans(df_wide[b2_1:b2_2])))
+}
+#Calculates brightness index sqrt(G^2+R^2+NIR^2) / 3
+calc_BI <- function(df, Gmin, Gmax, Rmin, Rmax, Nmin, Nmax){
+  G_1 <- which.min(abs(Gmin - as.numeric(names(df), options(warn=-1))))   #Identify first band and start range
+  G_2 <- which.min(abs(Gmax - as.numeric(names(df), options(warn=-1))))   #Identify first band and end range
+  R_1 <- which.min(abs(Rmin - as.numeric(names(df), options(warn=-1))))   #Identify second band and start range
+  R_2 <- which.min(abs(Rmax - as.numeric(names(df), options(warn=-1))))   #Identify second band and end range
+  N_1 <- which.min(abs(Nmin - as.numeric(names(df), options(warn=-1))))   #Identify second band and start range
+  N_2 <- which.min(abs(Nmax - as.numeric(names(df), options(warn=-1))))   #Identify second band and end range
+  sqrt(rowMeans(df_wide[G_1:G_2])^2+rowMeans(df_wide[R_1:R_2])^2+rowMeans(df_wide[N_1:N_2])^2) / 3
 }
 #Calculates normalized index using (a:b - c:d) / (a:b + c:d)
 calc_VI <- function(df, a, b, c, d){
@@ -162,13 +172,14 @@ df_wide <- dataset %>% select(wavelength, reflectance, full) %>%
 
 #Chlorophyll
 df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
+df_wide$BI <- calc_BI(df_wide, 560, 560, 650, 650, 850, 850)
 df_wide$NDWI <- calc_VI(df_wide, 1850, 1850, 1925, 1925)
 df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
 df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
 
 #write csv file
-out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
-colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','NDWI','CI1','CI2')
+out<-cbind(df_wide$full,master$Plot,master$Treat,master$Biocrust,master$Rep,df_wide$NDVI,df_wide$BI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
+colnames(out)<-c('ID','Plot','Treat','Type','Rep','NDVI','BI','NDWI','CI1','CI2')
 write.csv(out,paste(github_dir,'/data/Level1/ASD_Indices_Full.csv',sep=''),row.names=FALSE,col.names=TRUE)
 
 #######UAS HEADWALL##############################
