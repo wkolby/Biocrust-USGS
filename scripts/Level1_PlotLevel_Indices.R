@@ -42,7 +42,7 @@ ggplot(Cover_Stats, aes(x = Treat2, y = Cover_Mean, fill=Type2)) +
   theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
   theme(legend.background = element_rect(colour = NA))+
   theme(text = element_text(size = 24))
-ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=150,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=200,height=120,units='mm')
 
 ######Cover Scatterplot#################################
 Cover_long <- read.csv2(paste(github_dir,'/data/Level1/',"BioCrust_Cover_Plot.csv",sep=''),sep=',',header=T)

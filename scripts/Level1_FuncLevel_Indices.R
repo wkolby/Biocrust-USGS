@@ -173,7 +173,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NDVI, fill=Treat
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
-ggsave(paste(github_dir,'/figures/',"Box_Multispec_Chlorophyll_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Multispec_Chlorophyll_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=115,units='mm')
 
 typ_names=c('Light' = 'Light','Dark' = 'Dark')
 uas$Treat <- factor(uas$Treat,levels=c("CC","CW","LC","LW"))
@@ -187,7 +187,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=BI, fill=Treat))
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
-ggsave(paste(github_dir,'/figures/',"Box_Multispec_Brightness_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Multispec_Brightness_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=115,units='mm')
 
 typ_names=c('Light' = 'Light','Dark' = 'Dark')
 uas$Treat <- factor(uas$Treat,levels=c("CC","CW","LC","LW"))
@@ -201,5 +201,5 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NTI_3, fill=Trea
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
-ggsave(paste(github_dir,'/figures/',"Box_Multispec_Termperature_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Multispec_Termperature_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=115,units='mm')
 
