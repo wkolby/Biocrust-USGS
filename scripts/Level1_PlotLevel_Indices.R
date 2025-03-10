@@ -1,9 +1,10 @@
+rm(list = ls()) # clear the environment
+setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
+github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
+
 library(tidyverse)
 library(ggpubr)
 library(RColorBrewer)
-
-setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
-github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
 
 #######################################PLOT LEVEL###################################################################
 ########################################BioCrust Cover##############################################################
