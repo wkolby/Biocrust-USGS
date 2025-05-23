@@ -1,0 +1,184 @@
+---
+title: "B Plot Crypto in collars"
+author: "Cara Lauria"
+date: "10/16/23"
+output: html_document
+---
+
+```{r}
+library(readxl)
+library(plotrix)
+library(tidyverse)
+library(vegan)
+library(ggforce)
+library(indicspecies)
+library(kableExtra)
+```
+
+### Theme
+```{r}
+must_do <-theme_bw()+
+        theme(
+        axis.title.x = element_text(size=18), # remove x-axis labels
+        axis.text.y = element_text(size=8), # remove y-axis labels
+        panel.background = element_blank(), 
+        panel.grid.major = element_blank(),  #remove major-grid labels
+        panel.grid.minor = element_blank(),  #remove minor-grid labels
+        plot.background = element_blank(), 
+        plot.title = element_text(hjust = 0.5),
+        strip.background = element_blank(),
+        panel.border = element_rect(colour = "black"))
+```
+
+# multip spread
+```{r}
+multi_spread <- function(df, key, value) {
+    # quote key
+    keyq <- rlang::enquo(key)
+    # break value vector into quotes
+    valueq <- rlang::enquo(value)
+    s <- rlang::quos(!!valueq)
+    df %>% gather(variable, value, !!!s) %>%
+        unite(temp, !!keyq, variable) %>%
+        spread(temp, value)
+}
+
+# multi_spread(CoverID, c(mean, SE))
+```
+
+### Importing and Tidying Data
+```{r}
+setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
+raw<-read_excel("data/Cover/Plot/Bplot_100pt_2021.xlsx", sheet = "Bplots100pt")
+
+# first isolate and spread out long data in annual/perenial column
+# get rid of dead cover
+dat<-raw %>% 
+  select(Plot:Row, Annual, Perennial) %>%  
+  gather(key="Annual_Prennial", value="Spp", c(Annual:Perennial), na.rm = T) %>% 
+  mutate(Annual_Prennial=toupper(Annual_Prennial)) %>% 
+  mutate(Hits = if_else(is.na(Spp), 0, 1)) %>% 
+  select(-Annual_Prennial) %>% 
+  filter(!str_detect(Spp, "_D")) %>% # get rid of dead plant cover
+  spread(Spp, Hits, fill=0)
+
+# isolate rest wide data for other columns
+dat2<-raw %>% 
+  select(Plot:Stipa)
+
+# join together to datasets by Plot, Treatment, Date, Reader, Recorder, Quad, and Row
+dat3<-full_join(dat2, dat)
+  
+# change live/dead codes to numbers and only keep live hits
+dat4<-dat3 %>% 
+  mutate(ATCO=recode(Atco, "1"=1,"L"= 1, "D"=0, "LD"=1, "2"=0, "3"=1)) %>% 
+  mutate(HIJA=recode(Hilaria, "1"=1, "L"= 1, "D"=0, "LD"=1, "3"=1, "2"=0)) %>% 
+  mutate(ACHY=recode(Stipa, "1"=1, "L"= 1, "D"=0, "LD"=1, "2"=0, "3"=1)) %>% 
+  mutate(
+    Lichen = if_else(MossLichen == "L", 1, 0, missing = 0),
+    Moss = if_else(MossLichen == "M", 1, 0, missing = 0)
+  ) %>% 
+  mutate(
+    Dark = if_else(Cyano == "D", 1, 0, missing = 0),
+    Light = if_else(Cyano == "L", 1, 0, missing = 0)
+  ) %>% 
+  select(-Atco, -Hilaria, -Stipa, -Cyano, -MossLichen) %>% 
+  mutate_at(c('Moss', 'Lichen', 'Dark', 'Light', 'Litter', 'Bromus', 'Rock', 'Bare', 'PlantBase', 'Chamber', 'ATCO', 'HIJA', 'ACHY'), as.numeric) %>% 
+  mutate(Quad=recode(Quad, "1a"="1", "2a"="2", "3a"="3", "4a"="4")) %>% 
+  separate(Plot, into = c("Plot", "Block"), sep = "(?<=\\D)(?=\\d)")
+
+# calculate pct cover for each quad
+dat5 <-dat4 %>% 
+  pivot_longer(cols = Litter:Light, names_to = "CoverID", values_to = "Hits", values_drop_na = TRUE) %>% 
+  mutate(Hits = as.numeric(Hits)) %>% 
+  group_by(Plot, Block, Treatment, Quad, CoverID) %>% 
+  summarise(Hits = sum(Hits, na.rm=TRUE), .groups = "drop") %>% 
+  pivot_wider(names_from = CoverID, values_from = Hits, values_fill = list(Hits = 0)) %>% 
+  mutate(total = rowSums(.[5:37])) %>% 
+  pivot_longer(cols = ACHY:ATCO, names_to = "CoverID", values_to = "Hits", values_drop_na = TRUE) %>% 
+  mutate(PctCover=(Hits/total)*100) %>% 
+  # select(-Hits)  %>%
+  mutate(FG = case_when(
+    CoverID == "Moss"       ~ "Moss",
+    CoverID == "Lichen"     ~ "Lichen",
+    CoverID == "Dark"       ~ "DkCy",
+    CoverID == "Light"      ~ "LtCy",
+    CoverID == "Bare"       ~ "Bare_Ground",
+    CoverID == "Rock"       ~ "Rock",
+    CoverID == "Litter"     ~ "Litter",
+    CoverID == "Chamber"    ~ "Chamber",
+    CoverID == "PlantBase"  ~ "Plant_Base",
+    
+    # Perennial Grasses
+    CoverID %in% c("ACHY", "HIJA", "HECO",  "SPORO", "STCO") ~ "Perennial_Grass",
+    
+    # Annual Grasses
+    CoverID %in% c("FEOC", "Bromus") ~ "Annual_Grass",
+    
+    # Shrub
+    CoverID %in% c("GUSA", "ATCO", "EPHED", "EPTO", "EPVI", "KRLA") ~ "Shrub",
+    
+    # Cactus
+    CoverID %in% c("OPUNT", "SCWH") ~ "Cactus",
+    
+    # Annual Forbs
+    CoverID %in% c("ANBR", "ASAM", "CHER", "CRYPT", "CYAC", "DEAN", "DEPI", 
+                   "ENFR",  "ERIN", "GAPI", "GIIN", "IPPO", "LEMO",
+                   "LEOC", "LYGR", "MAAF", "OECA", "PHCR", "PLPA", "TILA", 
+                   "UNK1", "MACA") ~ "Annual_Forb",
+    
+    TRUE ~ "Unknown"  # Catch any unexpected values
+  )) %>% 
+  mutate(FG2 = case_when(
+    FG %in% c("Plant_Base", "Perennial_Grass", "Annual_Forb", "Shrub", "Annual_Grass", "Cactus") ~ "Plant",
+    FG %in% c("Moss", "Lichen", "DkCy", "LtCy") ~ "Biocrust",
+    FG %in% c("Rock", "Bare_Ground", "Litter", "Chamber") ~ "Abiotic_Cover"))
+
+
+write.csv(dat5, file="2021 DOE Raw Veg Data for Bill.csv")
+```
+
+# Summarizing Mean Cover
+```{r}
+# cacluate mean cover for each plot
+dat6<-dat5 %>% 
+  filter(Plot == "B") %>% 
+  group_by(Plot, Treatment, CoverID, FG, FG2) %>% 
+  summarise(mean=mean(PctCover, na.rm = T), SE = std.error(PctCover, na.rm = T))  
+  
+# write.csv(dat6, file="2021 DOE B Plot Mean Veg Data for Bill.csv")
+```
+
+### Plotting  
+```{r}
+# missing data for quad 2-4 of B5 C??
+dat5 %>% 
+  filter(Plot == "B") %>% 
+  ggplot(aes(Block, PctCover,  fill = FG2)) +
+  geom_bar(stat = "identity")+
+  facet_wrap(~Treatment)+
+  must_do+
+  ggtitle("100 point data 2021")
+
+dat5 %>% 
+  filter(Plot == "B") %>% 
+  group_by(Plot, Treatment, FG2) %>% 
+  summarise(mean=mean(PctCover, na.rm = T), SE = std.error(PctCover, na.rm = T))  %>% 
+ggplot(aes(mean, fct_reorder(FG2, mean))) +
+geom_bar(stat = "identity", position = position_dodge(0.9), color="black")+
+geom_errorbar(aes(xmin=mean-SE, xmax=mean+SE), width=0, color="black", position = position_dodge(0.9))+
+  facet_grid(~Treatment)+
+  ylab("")+
+  xlab("mean percent cover (%)")+
+  must_do
+
+dat6 %>% 
+  filter(Plot == "C") %>% 
+ggplot(aes(mean, fct_reorder(CoverID, mean))) +
+  geom_bar(stat = "identity", position = position_dodge(0.9), color="black")+
+  geom_errorbar(aes(xmin=mean-SE, xmax=mean+SE), width=0, color="black", position = position_dodge(0.9))+
+  facet_grid(Plot~Treatment)+
+  ylab("")+
+  xlab("mean percent cover (%)")+
+  must_do
+```

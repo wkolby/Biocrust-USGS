@@ -7,31 +7,70 @@ library(ggpubr)
 library(RColorBrewer)
 
 #######################################PLOT LEVEL###################################################################
-########################################BioCrust Cover##############################################################
+########################################BioCrust Cover 100pt##############################################################
+Cover<-read.csv2(paste(github_dir,'/data/Level1/',"2022_DOE_Cover_Data.csv",sep=''),sep=',',header=T)
+Cover$PctCover<-as.numeric(Cover$PctCover)
+Cover_Stats = Cover %>% group_by(Plot,Block,Treatment,FG) %>% 
+  summarise(N = n(), TotCover = mean(PctCover,na.rm=T),Cover_Sd = sd(PctCover,na.rm=T))
+Cover_Stats<-subset(Cover_Stats, Plot %in% 'B')
+Cover_Biocrust<-subset(Cover_Stats, FG %in% c('LtCy','DkCy','Lichen','Moss'))
+Cover_Biocrust$Treatment <- factor(Cover_Biocrust$Treatment,levels=c("C","W","L","LW"))
+Cover_Biocrust<-Cover_Biocrust[order(Cover_Biocrust$Block,Cover_Biocrust$Treatment),]
+LtCy<-subset(Cover_Biocrust, FG %in% c('LtCy'))
+DkCy<-subset(Cover_Biocrust, FG %in% c('DkCy'))
+Lichen<-subset(Cover_Biocrust, FG %in% c('Lichen'))
+Moss<-subset(Cover_Biocrust, FG %in% c('Moss'))
+
+Cover_Plant<-subset(Cover_Stats, FG %in% c('Annual_Forb','Annual_Grass','Perennial_Grass','Shrub','Cactus'))
+Cover_Plant = Cover_Plant %>% group_by(Plot,Block,Treatment) %>% 
+  summarise(TotCover = sum(TotCover,na.rm=T))
+Cover_Plant$Treatment <- factor(Cover_Plant$Treatment,levels=c("C","W","L","LW"))
+Cover_Plant<-Cover_Plant[order(Cover_Plant$Treatment),]
+Cover_Plant<-Cover_Plant[order(Cover_Plant$Block),]
+
+#Stacked Barplot
+Cover_Biocrust$FG <- factor(Cover_Biocrust$FG,levels=c('LtCy','DkCy','Lichen','Moss'))
+ggplot(Cover_Biocrust, aes(x = Treatment, y = TotCover, fill=FG)) +
+  geom_bar(stat="identity",position='stack',color='black') +
+  scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
+  scale_y_continuous("Percent Cover",expand = c(0, 0), limits = c(0, 60),breaks=c(0,20,40,60,80,100)) +
+  scale_x_discrete("",labels=c('Control', 'AltP', 'Warmed', 'AltP + \nWarmed'),guide = guide_axis(angle = 45))+
+  facet_wrap(~Block)+
+  labs(title="",fill = "Func Type")+
+  theme_bw() +
+  theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
+  theme(legend.background = element_rect(colour = NA))+
+  theme(text = element_text(size = 24))
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PointFrame_PlotLevel_ByPlot.png",sep=""),dpi=300,width=200,height=120,units='mm')
+
+#Stacked Barplot
+Cover_Biocrust = Cover_Biocrust %>% group_by(Plot,Treatment,FG) %>% 
+  summarise(TotCover = mean(TotCover,na.rm=T))
+Cover_Biocrust$FG <- factor(Cover_Biocrust$FG,levels=c('LtCy','DkCy','Lichen','Moss'))
+ggplot(Cover_Biocrust, aes(x = Treatment, y = TotCover, fill=FG)) +
+  geom_bar(stat="identity",position='stack',color='black') +
+  scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
+  scale_y_continuous("Percent Cover",expand = c(0, 0), limits = c(0, 35),breaks=c(0,5,10,15,20,25,30,35)) +
+  scale_x_discrete("",labels=c('Control', 'AltP', 'Warmed', 'AltP + \nWarmed'),guide = guide_axis(angle = 45))+
+  labs(title="",fill = "Func Type")+
+  theme_bw() +
+  theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
+  theme(legend.background = element_rect(colour = NA))+
+  theme(text = element_text(size = 24))
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PointFrame_PlotLevel.png",sep=""),dpi=300,width=200,height=120,units='mm')
+
+########################################BioCrust Cover Crypto##############################################################
 #open data files
 Cover_long <- read.csv2(paste(github_dir,'/data/Level1/',"BioCrust_Cover_Plot.csv",sep=''),sep=',',header=T)
 Cover_long$Val<-as.numeric(Cover_long$Val)
 Cover_long<-subset(Cover_long, Type %in% c('DCY','LCN','LCY','MSS'))
 Cover_long<-subset(Cover_long, Type %in% c('DCY','LCN','LCY','MSS'))
-Cover_long$Type2 <- factor(Cover_long$Type,levels=c("LCY","DCY","MSS","LCN"))
-Cover_long$Treat2 <- factor(Cover_long$Treat,levels=c("CC","CW","LC","LW"))
-Cover_Stats = Cover_long %>% group_by(Treat2,Type2) %>% 
+Cover_Stats = Cover_long %>% group_by(Treat,Type) %>% 
   summarise(N = n(), Cover_Mean = mean(Val,na.rm=T),Cover_Sd = sd(Val,na.rm=T))
 
-# #Distribution
-# ggplot(Cover_long, aes(x=Treat2, y=Val, fill=Treat2)) + 
-#   geom_boxplot() +
-#   scale_fill_manual(values=c("#3288BD","#99D594","#9E0142","#5E4FA2"))+
-#   facet_wrap(~Type2)+
-#   labs(y='Cover',x='')+
-#   theme_bw()+
-#   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-#   theme(text = element_text(size = 14))
-# ggsave(paste(github_dir,'/figures/',"Box_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=240,height=120,units='mm')
-
 #Stacked Barplot
-Cover_Stats$Type2 <- factor(Cover_Stats$Type2,levels=c("LCY","DCY","LCN","MSS"))
-ggplot(Cover_Stats, aes(x = Treat2, y = Cover_Mean, fill=Type2)) +
+Cover_Stats$Type <- factor(Cover_Stats$Type,levels=c("LCY","DCY","LCN","MSS"))
+ggplot(Cover_Stats, aes(x = Treat, y = Cover_Mean, fill=Type)) +
   geom_bar(stat="identity",position='stack',color='black') +
   scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
   scale_y_continuous("Percent Cover",expand = c(0, 0), limits = c(0, 60),breaks=c(0,20,40,60,80,100)) +
@@ -41,7 +80,22 @@ ggplot(Cover_Stats, aes(x = Treat2, y = Cover_Mean, fill=Type2)) +
   theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
   theme(legend.background = element_rect(colour = NA))+
   theme(text = element_text(size = 24))
-ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_PlotLevel.png",sep=""),dpi=300,width=200,height=120,units='mm')
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_CryptoFrame_PlotLevel.png",sep=""),dpi=300,width=200,height=120,units='mm')
+
+#Stacked Barplot
+Cover_long$Type <- factor(Cover_long$Type,levels=c("LCY","DCY","LCN","MSS"))
+ggplot(Cover_long, aes(x = Treat, y = Val, fill=Type)) +
+  geom_bar(stat="identity",position='stack',color='black') +
+  scale_fill_manual(values=c('red3','green3','cyan2','purple'),labels=c('LtCy','DkCy','Lichen','Moss'))+
+  scale_y_continuous("Percent Cover",expand = c(0, 0), limits = c(0, 100),breaks=c(0,20,40,60,80,100)) +
+  scale_x_discrete("",labels=c('Control', 'AltP', 'Warmed', 'AltP + \nWarmed'),guide = guide_axis(angle = 45))+
+  facet_wrap(~Plot)+
+  labs(title="",fill = "Func Type")+
+  theme_bw() +
+  theme(legend.position = 'right',legend.text=element_text(size=16),legend.title=element_text(size=18)) +
+  theme(legend.background = element_rect(colour = NA))+
+  theme(text = element_text(size = 24))
+ggsave(paste(github_dir,'/figures/',"StackedBar_Cover_Treat_CryptoFrame_PlotLevel_ByPlot.png",sep=""),dpi=300,width=200,height=120,units='mm')
 
 ######Cover Scatterplot#################################
 Cover_long <- read.csv2(paste(github_dir,'/data/Level1/',"BioCrust_Cover_Plot.csv",sep=''),sep=',',header=T)
@@ -52,6 +106,12 @@ DCY<-subset(Cover_long, Type %in% c('DCY'))
 LCN<-subset(Cover_long, Type %in% c('LCN'))
 MSS<-subset(Cover_long, Type %in% c('MSS'))
 PLT<-subset(Cover_long, Type %in% c('Plant'))
+#Replace with point frame data
+LCY$Val<-LtCy$TotCover
+DCY$Val<-DkCy$TotCover
+LCN$Val<-Lichen$TotCover
+MSS$Val<-Moss$TotCover
+PLT$Val<-Cover_Plant$TotCover
 
 #UAS Chlorophyll
 uas_ndvi <- read.csv2(paste(github_dir,'/data/Level1/',"BPlots_Micasense_NDVI_Full.csv",sep=''),sep=',',header=T)
@@ -62,7 +122,7 @@ fit=lm(data$NDVI~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT/2)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=0.0,label.y=.16,size=8)+
   annotate("text",x=0,y=0.145,label=(paste0("Delta = ",Dlt,"%")),adj=0,size = 8)+
@@ -81,13 +141,13 @@ fit=lm(data$NDVI~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=.1,label.y=.175,size=8)+
   annotate("text",x=.1,y=0.165,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size = 8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Chlorophyll Index',limits = c(.16,.24), breaks = seq(.14,.24,.02))+
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(0.05,1), breaks = seq(0,1,.1)) +
   labs(title="D. UAS Chlorophyll")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -106,7 +166,7 @@ fit=lm(data$BI~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=70,label.y=.08,adj=1,size=8)+
   annotate("text",x=70,y=0.07,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -125,13 +185,13 @@ fit=lm(data$BI~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=1,label.y=.07,adj=1,size=8)+
   annotate("text",x=1,y=0.0625,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Brightness Index',limits = c(.06,.12), breaks = seq(.06,.12,.01))+
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="E. UAS Brightness")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -150,7 +210,7 @@ fit=lm(data$Temp~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=Temp)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=70,label.y=0.24,adj=1,size=8)+
   annotate("text",x=70,y=0.225,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -169,13 +229,13 @@ fit=lm(data$Temp~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=Temp)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=1,label.y=0.23,adj=1,size=8)+
   annotate("text",x=1,y=0.215,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Surface Temperature Index',limits = c(.21,.32), breaks = seq(.21,.32,.02)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="F. UAS Surface Temperature")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -198,7 +258,7 @@ fit=lm(data_asd$NDVI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=0,size=8)+
   annotate("text",x=0,y=0.125,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -217,13 +277,13 @@ fit=lm(data_asd$NDVI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=.1,size=8)+
   annotate("text",x=.1,y=0.135,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Chlorophyll Index',limits = c(0.13,0.25), breaks = seq(0.13,0.25,.02)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="A. FieldSpec Chlorophyll")+
   theme_bw()+
   theme(legend.position = c(.825,.775),legend.background = element_blank(),legend.text=element_text(size=16)) + #legend.box.background = element_rect(color = 'black')
@@ -236,7 +296,7 @@ fit=lm(data_asd$BI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0725,label.x=70,adj=1,size=8)+
   annotate("text",x=70,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -256,13 +316,13 @@ fit=lm(data_asd$BI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0675,label.x=1,adj=1,size=8)+
   annotate("text",x=1,y=0.055,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
-  scale_y_continuous('Brightness Index',limits = c(0.05,0.15), breaks = seq(0.05,0.15,.01)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_y_continuous('Brightness Index',limits = c(0.04,0.15), breaks = seq(0.04,0.15,.01)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="B. FieldSpec Brightness")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -276,7 +336,7 @@ fit=lm(data_asd$NDWI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=NDWI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.085,label.x=0,size=8)+
   annotate("text",x=0,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -296,13 +356,13 @@ fit=lm(data_asd$NDWI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=NDWI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.095,label.x=.1,size=8)+
   annotate("text",x=.1,y=0.075,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Moisture Index',limits = c(0.07,0.24), breaks = seq(0.07,0.24,.02)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="C. FieldSpec Moisture")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -323,7 +383,7 @@ fit=lm(data_wv3$NDVI~data_wv3$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=0,size=8)+
   annotate("text",x=0,y=0.125,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -342,13 +402,13 @@ fit=lm(data_wv3$NDVI~data_wv3$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
-  stat_cor(aes(label = after_stat(rr.label)),label.y=.125,label.x=.1,size=8)+
-  annotate("text",x=.1,y=0.105,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
+  stat_cor(aes(label = after_stat(rr.label)),label.y=.145,label.x=.05,size=8)+
+  annotate("text",x=.05,y=0.135,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
-  scale_y_continuous('Chlorophyll Index',limits = c(0.10,0.27), breaks = seq(0.10,0.27,.02)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_y_continuous('Chlorophyll Index',limits = c(0.13,0.23), breaks = seq(0.13,0.23,.02)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="A. WorldView-3 Chlorophyll")+
   theme_bw()+
   theme(legend.position = c(.825,.775),legend.background = element_blank(),legend.text=element_text(size=16)) + #legend.box.background = element_rect(color = 'black')
@@ -361,7 +421,7 @@ fit=lm(data_wv3$BI~data_wv3$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0725,label.x=70,adj=1,size=8)+
   annotate("text",x=70,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -381,13 +441,13 @@ fit=lm(data_wv3$BI~data_wv3$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=c(2,3,2,1,1,2,4,4,3,1,3,1,1,1,1,1,2,3,2,1)*2.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0675,label.x=1,adj=1,size=8)+
   annotate("text",x=1,y=0.0625,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   scale_y_continuous('Brightness Index',limits = c(0.06,0.10), breaks = seq(0.06,0.10,.01)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.1,1), breaks = seq(.1,1,.1)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="B. WorldView-3 Brightness")+
   theme_bw()+
   theme(legend.position = "none") + 
@@ -395,3 +455,4 @@ ggplot(data_wv3, aes(x=RATIO, y=BI)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 20))
 ggsave(paste(github_dir,'/figures/',"Scatterplot_BI_RATIO_WV3_PlotLevel.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
