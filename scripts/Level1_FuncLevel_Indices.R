@@ -21,7 +21,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=reorder(Type,NDV
   geom_boxplot() +
   scale_fill_manual(values=c('red3','green3','cyan2','purple'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY")+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY", label.y = .4, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   labs(y='Normalized Chlorophyll Index',x='')+
   theme_bw() +
@@ -29,7 +29,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=reorder(Type,NDV
   theme(text = element_text(size = 18))
 ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Chlorophyll_FuncLevel.png",sep=""),dpi=300,width=180,height=180,units='mm')
 #stats
-compare_means(NDVI ~ Type,  data = subset(asd, Type %in% c('LCY','DCY','LCN','MSS')))
+compare_means(NDVI ~ Type,  method = "t.test", ref.group = "LCY", data = subset(asd, Type %in% c('LCY','DCY','LCN','MSS')))
 
 trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed')
 asd$Type <- factor(asd$Type,levels=c("LCY","DCY","LCN","MSS"))
@@ -37,7 +37,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Type, y=NDVI, fi
   geom_boxplot() +
   scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY",label.y = .4)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY", label.y = .35, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_x_discrete(labels=c('LtCy','DkCy','Lichen','Moss'))+
@@ -62,7 +62,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Type, y=BI, fill
   geom_boxplot() +
   scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY",label.y = .17)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY",label.y = .16, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_x_discrete(labels=c('LtCy','DkCy','Lichen','Moss'))+
@@ -86,7 +86,7 @@ asd$Type <- factor(asd$Type,levels=c("LCY","DCY","LCN","MSS"))
 ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Type, y=NDWI, fill=Type)) + 
   geom_boxplot() +
   scale_fill_manual(name='Func Type', values=c('red3','green3','cyan2','purple'),labels=c("LtCy","DkCy","Lichen","Moss"))+
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY",label.y = .28)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "LCY",label.y = .27, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
@@ -112,7 +112,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Treat, y=NDVI, f
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .4)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .37, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
@@ -140,10 +140,11 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Treat, y=BI, fil
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .17)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .18, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
+  scale_y_continuous(limits=c(0.06,0.20))+
   labs(title='B. FieldSpec Brightness',y='Brightness Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
@@ -169,7 +170,7 @@ ggplot(subset(asd, Type %in% c('LCY','DCY','LCN','MSS')), aes(x=Treat, y=NDWI, f
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .29)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .26, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
@@ -203,9 +204,9 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=NDVI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('lightgrey','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .33)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .31, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_x_discrete(labels=c('Light','Dark'))+
@@ -228,9 +229,9 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=BI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('lightgrey','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .15)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .15, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_x_discrete(labels=c('Light','Dark'))+
@@ -252,9 +253,9 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=NTI_3, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('lightgrey','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .69)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .67, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
   scale_x_discrete(labels=c('Light','Dark'))+
@@ -278,7 +279,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NDVI, fill=Treat
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .33)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .33, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
@@ -301,7 +302,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=BI, fill=Treat))
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .17)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .16, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+
@@ -324,7 +325,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NTI_3, fill=Trea
   geom_boxplot() +
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .72)+ # Pairwise comparison against LCY
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "CC",label.y = .7, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Type, labeller = as_labeller(typ_names), ncol=2)+
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP + \nWarmed'))+

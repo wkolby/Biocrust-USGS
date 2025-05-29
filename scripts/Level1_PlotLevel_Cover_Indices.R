@@ -223,6 +223,19 @@ fit=lm(data_asd$NDVI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=NDVI)) +
+  geom_point(aes(fill=Treat),color = "black",shape = 21, size = 8)+
+  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
+  scale_y_continuous('Chlorophyll Index',limits = c(0.13,0.255), breaks = seq(0.13,0.27,.02)) +
+  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
+  labs(title="A. FieldSpec Chlorophyll")+
+  theme_bw()+
+  theme(legend.background = element_blank(),legend.text=element_text(size=16),legend.box.background = element_rect(color = 'black')) + #
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  theme(text = element_text(size = 20))
+ggsave(paste(github_dir,'/figures/',"Scatterplot_NDVI_RATIO_ASD_PlotLevel_FixedSize.png",sep=""),dpi=300,width=180,height=120,units='mm')
+
+
+ggplot(data_asd, aes(x=RATIO, y=NDVI)) +
   geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=.1,size=8)+
