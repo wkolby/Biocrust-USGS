@@ -24,8 +24,8 @@ ggplot(subset_stats, aes(x=tx, y=temp, fill=tx)) +
   geom_boxplot() +
   scale_fill_manual(name='Treatment', values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c('Control','AltP','Warmed','AltP+Warmed'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "C",label.y = 31)+ # Pairwise comparison against Control
-  stat_compare_means(label.y = 7)+ # Add global p-value
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "C",label.y = 30, color = 'red', size = 10)+ # Pairwise comparison against Control
+  stat_compare_means(label.y = 7, color = 'red', size = 6)+ # Add global p-value
   #facet_wrap(~cover,labeller = as_labeller(tx_names))+ 
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP+Warmed'))+
   labs(title='A. Surface Temperature',y=expression(paste("Surface Temperature ( ", degree, "C)")),x='')+
@@ -44,8 +44,8 @@ ggplot(subset_stats, aes(x=cover, y=temp, fill=cover)) +
   geom_boxplot() +
   scale_fill_manual(name='Func Type', values=c('red3','green3','purple'),labels=c('LtCy','DkCy','Moss'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "lc",label.y = 30)+ # Pairwise comparison against Control
-  stat_compare_means(label.y = 7)+ # Add global p-value
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "lc",label.y = 30, color = 'red', size = 10)+ # Pairwise comparison against Control
+  stat_compare_means(label.y = 7, color = 'red', size = 6)+ # Add global p-value
   #facet_wrap(~tx)+ #labeller = as_labeller(tx_names) 
   scale_x_discrete(labels=c('LtCy','DkCy','Moss'))+
   labs(title='C. Surface Temperature',y=expression(paste("Surface Temperature ( ", degree, "C)")),x='')+
@@ -64,8 +64,8 @@ ggplot(subset_stats, aes(x=tx, y=sm.corr, fill=tx)) +
   geom_boxplot() +
   scale_fill_manual(name='Treatment', values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c('Control','AltP','Warmed','AltP+Warmed'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "C",label.y = 0.00175)+ # Pairwise comparison against Control
-  stat_compare_means(label.y = -.000175)+ # Add global p-value
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "C",label.y = 0.00165, color = 'red', size = 10)+ # Pairwise comparison against Control
+  stat_compare_means(label.y = -.000175, color = 'red', size = 6)+ # Add global p-value
   #facet_wrap(~cover,labeller = as_labeller(tx_names))+ 
   scale_x_discrete(labels=c('Control','AltP','Warmed','AltP+Warmed'))+
   labs(title='B. Soil Moisture',y=expression(paste("Gravimetric Water Content (g g"^-1,")")),x='')+
@@ -84,8 +84,8 @@ ggplot(subset_stats, aes(x=cover, y=sm.corr, fill=cover)) +
   geom_boxplot() +
   scale_fill_manual(name='Func Type', values=c('red3','green3','purple'),labels=c('LtCy','DkCy','Moss'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
-  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "lc",label.y = 0.00175)+ # Pairwise comparison against Control
-  stat_compare_means(label.y = -.000175)+ # Add global p-value
+  stat_compare_means(label = "p.signif", method = "t.test", ref.group = "lc",label.y = 0.00165, color = 'red', size = 10)+ # Pairwise comparison against Control
+  stat_compare_means(label.y = -.000175, color = 'red', size = 6)+ # Add global p-value
   #facet_wrap(~tx)+ #labeller = as_labeller(tx_names) 
   scale_x_discrete(labels=c('LtCy','DkCy','Moss'))+
   labs(title='D. Soil Moisture',y=expression(paste("Gravimetric Water Content (g g"^-1,")")),x='')+
