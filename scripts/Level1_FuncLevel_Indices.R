@@ -49,7 +49,7 @@ ggsave(paste(github_dir,'/figures/',"Box_FieldSpec_Chlorophyll_byFunc_FuncLevel.
 #stats
 asd_subset<-subset(asd, Type %in% c('LCY','DCY','LCN','MSS'))
 asd_subset %>% group_by(Type) %>% summarise(median = median(NDVI), iqr = IQR(NDVI))
-asd_subset %>% group_by(Type,Treatment) %>% summarise(median = median(NDVI), iqr = IQR(NDVI))
+asd_subset %>% group_by(Type,Treat) %>% summarise(median = median(NDVI), iqr = IQR(NDVI))
 compare_means(NDVI ~ Type,  data = asd_subset)
 compare_means(NDVI ~ Type,  data = subset(asd_subset, Treat %in% 'CC'))
 compare_means(NDVI ~ Type,  data = subset(asd_subset, Treat %in% 'CW'))
@@ -204,12 +204,12 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=NDVI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Early','Late'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
   stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .31, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
-  scale_x_discrete(labels=c('Light','Dark'))+
+  scale_x_discrete(labels=c('Early','Late'))+
   labs(title='D. UAS Chlorophyll',y='Chlorophyll Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
@@ -229,12 +229,12 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=BI, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Early','Late'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
   stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .15, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
-  scale_x_discrete(labels=c('Light','Dark'))+
+  scale_x_discrete(labels=c('Early','Late'))+
   labs(title='E. UAS Brightness',y='Brightness Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
@@ -253,12 +253,12 @@ trt_names=c('CC' = 'Control','CW' = 'AltP','LC' = 'Warmed','LW' = 'AltP + Warmed
 uas$Type <- factor(uas$Type,levels=c('Light','Dark'))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Type, y=NTI_3, fill=Type)) + 
   geom_boxplot() +
-  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Light','Dark'))+
+  scale_fill_manual(name='Func Type', values=c('white','darkgrey'),labels=c('Early','Late'))+
   stat_summary(fun.y=mean, geom="point", shape=5, size=4) +
   stat_compare_means(label = "p.signif", method = "t.test", ref.group = "Light",label.y = .67, color = 'red', size = 10)+ # Pairwise comparison against LCY
   #stat_compare_means(label.y = .4)+ # Add global p-value
   facet_wrap(~Treat, labeller = as_labeller(trt_names), ncol=2)+
-  scale_x_discrete(labels=c('Light','Dark'))+
+  scale_x_discrete(labels=c('Early','Late'))+
   labs(title='F. UAS Surface Temperature',y='Surface Temperature Index',x='')+
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
@@ -273,7 +273,7 @@ compare_means(NTI_3 ~ Type,  data = subset(uas_subset, Treat %in% 'CW'))
 compare_means(NTI_3 ~ Type,  data = subset(uas_subset, Treat %in% 'LC'))
 compare_means(NTI_3 ~ Type,  data = subset(uas_subset, Treat %in% 'LW'))
 
-typ_names=c('Light' = 'Light','Dark' = 'Dark')
+typ_names=c('Light' = 'Early','Dark' = 'Late')
 uas$Treat <- factor(uas$Treat,levels=c("CC","CW","LC","LW"))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NDVI, fill=Treat)) + 
   geom_boxplot() +
@@ -296,7 +296,7 @@ compare_means(NDVI ~ Treat,  data = uas_subset)
 compare_means(NDVI ~ Treat,  data = subset(uas_subset, Type %in% 'Light'))
 compare_means(NDVI ~ Treat,  data = subset(uas_subset, Type %in% 'Dark'))
 
-typ_names=c('Light' = 'Light','Dark' = 'Dark')
+typ_names=c('Light' = 'Early','Dark' = 'Late')
 uas$Treat <- factor(uas$Treat,levels=c("CC","CW","LC","LW"))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=BI, fill=Treat)) + 
   geom_boxplot() +
@@ -319,7 +319,7 @@ compare_means(BI ~ Treat,  data = uas_subset)
 compare_means(BI ~ Treat,  data = subset(uas_subset, Type %in% 'Light'))
 compare_means(BI ~ Treat,  data = subset(uas_subset, Type %in% 'Dark'))
 
-typ_names=c('Light' = 'Light','Dark' = 'Dark')
+typ_names=c('Light' = 'Early','Dark' = 'Late')
 uas$Treat <- factor(uas$Treat,levels=c("CC","CW","LC","LW"))
 ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NTI_3, fill=Treat)) + 
   geom_boxplot() +
@@ -333,7 +333,7 @@ ggplot(subset(uas, Type %in% c('Light','Dark')), aes(x=Treat, y=NTI_3, fill=Trea
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   theme(text = element_text(size = 18))
-ggsave(paste(github_dir,'/figures/',"Box_Multispec_Termperature_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=115,units='mm')
+ggsave(paste(github_dir,'/figures/',"Box_Multispec_Temperature_byTreat_FuncLevel.png",sep=""),dpi=300,width=180,height=115,units='mm')
 #stats
 uas_subset<-subset(uas, Type %in% c('Light','Dark'))
 subset(uas_subset, Type %in% 'Light') %>% group_by(Treat) %>% summarise(median = median(NTI_3), iqr = IQR(NTI_3))
