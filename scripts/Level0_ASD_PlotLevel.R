@@ -63,7 +63,8 @@ for(i in 1:length(master$File)){
   treat=rep(master$Treat[i],length(wvl))
   loc=rep(master$Loc[i],length(wvl))
   rep=rep(master$Rep[i],length(wvl))
-  full=paste(plot,'_',treat,'_',loc,'_',rep,sep='')
+  full=paste(plot,'_',treat,'_',loc,sep='')
+  #full=paste(plot,'_',treat,'_',loc,'_',rep,sep='') removed rep as an identifier so I could group by the category
   scan=rep(sub(".*/", "", file),length(wvl))
   
   ds=cbind(wvl,data_c,plot,tmp,wtr,treat,loc,rep,full,scan)
@@ -74,6 +75,19 @@ for(i in 1:length(master$File)){
 colnames(dataset) <- c("wavelength","reflectance","plot","tmp","wtr","treat","location","rep","full","scan")
 dataset=transform(dataset,wavelength = as.numeric(wavelength))
 dataset=transform(dataset,reflectance = as.numeric(reflectance))
+
+#Reduce by taking the mean across reps
+dataset_mean <- dataset %>%
+  group_by(wavelength,full) %>%
+  summarise_at(vars(reflectance), list(mean=mean)) %>%
+  as.data.frame()
+
+#Convert to wide format for export
+dataset_mean_wide <- dataset_mean %>% select(wavelength, mean, full) %>%
+  pivot_wider(names_from = wavelength, values_from = mean)
+
+#write csv file# NEED TO FIX
+write.csv(dataset_mean_wide,paste(github_dir,'/data/Level1/ASD_All_Spectra_PlotLevel.csv',sep=''),row.names=FALSE,col.names=FALSE)
 
 #####ASD Reflectance Plots#################
 dataset_mean_std <- dataset %>%
