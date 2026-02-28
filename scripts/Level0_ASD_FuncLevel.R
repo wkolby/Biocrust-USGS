@@ -37,7 +37,7 @@ calc_VI <- function(df, a, b, c, d){
 }
 
 #####################################
-master <- read.csv2(paste(github_dir,'/data/ASD/Contact_Datasheet_021422_021522.csv',sep=''),sep=',',header=T)
+master <- read.csv2(paste(github_dir,'/data/ASD/ASD_Contact_Datasheet_021422_021522.csv',sep=''),sep=',',header=T)
 master$File<-str_pad(master$File, 5, pad = "0")
 dataset <- data.frame()
 
@@ -68,6 +68,19 @@ for(i in 1:length(master$File)){
 colnames(dataset) <- c("wavelength","reflectance","plot","tmp","wtr","treat","quad","type","rep","full","scan")
 dataset=transform(dataset,wavelength = as.numeric(wavelength))
 dataset=transform(dataset,reflectance = as.numeric(reflectance))
+
+#Reduce by taking the mean across reps
+dataset_mean <- dataset %>%
+  group_by(wavelength,full) %>%
+  summarise_at(vars(reflectance), list(mean=mean)) %>%
+  as.data.frame()
+
+#Convert to wide format for export
+dataset_mean_wide <- dataset_mean %>% select(wavelength, mean, full) %>%
+  pivot_wider(names_from = wavelength, values_from = mean)
+
+#write csv file# NEED TO FIX
+write.csv(dataset_mean_wide,paste(github_dir,'/data/Level1/ASD_All_Spectra_ContactProbe.csv',sep=''),row.names=FALSE,col.names=FALSE)
 
 
 #####ASD Reflectance Plots#################
