@@ -494,12 +494,12 @@ if __name__ == '__main__':
     out_dir='/Users/wksmith/Documents/GitHub/Biocrust-USGS/figures/'
     
     ###Plot RGB
-    rgb_path=data_dir+'rgb/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_clipped.tif'
+    rgb_path=data_dir+'UAS_RGB/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_clipped.tif'
     src = rasterio.open(rgb_path)
-    #figure_rgb(src,out_dir+'BPlots_RGB.png')
-    rgb_path=data_dir+'rgb/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_zooma.tif'
+    figure_rgb(src,out_dir+'BPlots_RGB.png')
+    rgb_path=data_dir+'UAS_RGB/Biocrust_Flight2_021222_RGB_Ortho_Metashape_utm83_zooma.tif'
     src = rasterio.open(rgb_path)
-    #figure_rgb_zoom(src,out_dir+'BPlots_RGB_Zoom.png')
+    figure_rgb_zoom(src,out_dir+'BPlots_RGB_Zoom.png')
     
     ###Plot Thermal
     scale=1
@@ -511,19 +511,19 @@ if __name__ == '__main__':
     zoom_c=[637890,637905,4281840,4281855]
     zoom_w=[637860,637864,4281842.5,4281845]
     fid=gdal.Open(data_dir+'thermal/20220213_Flight1_XT2_IR/Biocrust_Flight1_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
-    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight1.png')
-    figure_mesh_zoom(fid,scale,color_list,levels,extnd,zoom_a,out_dir+'BPlots_Thermal_Flight1_Zoom_B1.png')
+    #figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight1.png')
+    #figure_mesh_zoom(fid,scale,color_list,levels,extnd,zoom_a,out_dir+'BPlots_Thermal_Flight1_Zoom_B1.png')
     fid=gdal.Open(data_dir+'thermal/20220214_Flight2_XT2_IR/Biocrust_Flight2_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
     figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight2.png')
     fid=gdal.Open(data_dir+'thermal/20220212_Flight3_XT2_IR/Biocrust_Flight3_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
     figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight3.png')
     figure_mesh_zoom(fid,scale,color_list,levels,extnd,zoom_a,out_dir+'BPlots_Thermal_Flight3_Zoom_B1.png')
     fid=gdal.Open(data_dir+'thermal/20220212_Flight4_XT2_IR/Biocrust_Flight4_XT2_IRnorm_Ortho_Metashape_utm83_clipped.tif')
-    figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight4.png')
+    #figure_mesh(fid,scale,color_list,levels,extnd,out_dir+'BPlots_Thermal_Flight4.png')
     levels = np.linspace(0,1,num=11)
     cmap=cm.get_cmap('winter',12)
     color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
-    figure_colorbar(color_list, levels, extnd,'Surface Temperature Index',out_dir+'BPlots_Thermal_Flight2_colorbar.png')
+    #figure_colorbar(color_list, levels, extnd,'Surface Temperature Index',out_dir+'BPlots_Thermal_Flight2_colorbar.png')
     
     ###Plot NDVI
     scale=1
@@ -538,7 +538,7 @@ if __name__ == '__main__':
     levels = np.linspace(0,0.5,num=11)
     cmap=cm.get_cmap('PRGn',12)
     color_list = [rgb2hex(cmap(i)[:3]) for i in range(cmap.N)]
-    figure_colorbar(color_list, levels, extnd,'Chlorophyll Index',out_dir+'BPlots_NDVI_Micasense_colorbar.png')
+    #figure_colorbar(color_list, levels, extnd,'Chlorophyll Index',out_dir+'BPlots_NDVI_Micasense_colorbar.png')
     
     ###Plot BI
     scale=1

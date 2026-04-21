@@ -69,7 +69,7 @@ fit=lm(data$NDVI~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT/2)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=6)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=0.0,label.y=.16,size=8)+
   annotate("text",x=0,y=0.145,label=(paste0("Delta = ",Dlt,"%")),adj=0,size = 8)+
@@ -88,7 +88,7 @@ fit=lm(data$NDVI~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=.1,label.y=.175,size=8)+
   annotate("text",x=.1,y=0.165,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size = 8)+
@@ -112,7 +112,7 @@ fit=lm(data$BI~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=70,label.y=.08,adj=1,size=8)+
   annotate("text",x=70,y=0.07,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -131,7 +131,7 @@ fit=lm(data$BI~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=1,label.y=.07,adj=1,size=8)+
   annotate("text",x=1,y=0.0625,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
@@ -156,7 +156,7 @@ fit=lm(data$Temp~data$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=LCY, y=Temp)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=70,label.y=0.24,adj=1,size=8)+
   annotate("text",x=70,y=0.225,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -175,7 +175,7 @@ fit=lm(data$Temp~data$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data, aes(x=RATIO, y=Temp)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.x=1,label.y=0.23,adj=1,size=8)+
   annotate("text",x=1,y=0.215,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
@@ -204,7 +204,7 @@ fit=lm(data_asd$NDVI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=0,size=8)+
   annotate("text",x=0,y=0.125,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -223,20 +223,7 @@ fit=lm(data_asd$NDVI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21, size = 8)+
-  scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
-  scale_y_continuous('Chlorophyll Index',limits = c(0.13,0.255), breaks = seq(0.13,0.27,.02)) +
-  scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
-  labs(title="A. FieldSpec Chlorophyll")+
-  theme_bw()+
-  theme(legend.background = element_blank(),legend.text=element_text(size=16),legend.box.background = element_rect(color = 'black')) + #
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  theme(text = element_text(size = 20))
-ggsave(paste(github_dir,'/figures/',"Scatterplot_NDVI_RATIO_ASD_PlotLevel_FixedSize.png",sep=""),dpi=300,width=180,height=120,units='mm')
-
-
-ggplot(data_asd, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=.1,size=8)+
   annotate("text",x=.1,y=0.135,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
@@ -255,7 +242,7 @@ fit=lm(data_asd$BI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0725,label.x=70,adj=1,size=8)+
   annotate("text",x=70,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -275,7 +262,7 @@ fit=lm(data_asd$BI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0675,label.x=1,adj=1,size=8)+
   annotate("text",x=1,y=0.055,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
@@ -295,7 +282,7 @@ fit=lm(data_asd$NDWI~data_asd$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=LCY, y=NDWI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.085,label.x=0,size=8)+
   annotate("text",x=0,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -315,7 +302,7 @@ fit=lm(data_asd$NDWI~data_asd$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_asd, aes(x=RATIO, y=NDWI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.095,label.x=.1,size=8)+
   annotate("text",x=.1,y=0.075,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
@@ -342,7 +329,7 @@ fit=lm(data_wv3$NDVI~data_wv3$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=LCY, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.15,label.x=0,size=8)+
   annotate("text",x=0,y=0.125,label=(paste0("Delta = ",Dlt,"%")),adj=0,size=8)+
@@ -361,7 +348,7 @@ fit=lm(data_wv3$NDVI~data_wv3$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=RATIO, y=NDVI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.145,label.x=.05,size=8)+
   annotate("text",x=.05,y=0.135,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
@@ -380,7 +367,7 @@ fit=lm(data_wv3$BI~data_wv3$LCY)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=LCY, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0725,label.x=70,adj=1,size=8)+
   annotate("text",x=70,y=0.06,label=(paste0("Delta = ",Dlt,"%")),adj=1,size=8)+
@@ -400,7 +387,7 @@ fit=lm(data_wv3$BI~data_wv3$RATIO)
 Dlt=round(((max(fit$fitted.values)-min(fit$fitted.values))/min(fit$fitted.values))*100,1)
 PDlt=round((Dlt/0.85623)*.1,1)
 ggplot(data_wv3, aes(x=RATIO, y=BI)) +
-  geom_point(aes(fill=Treat),color = "black",shape = 21,size=data$PLT*.5)+
+  geom_point(aes(fill=Treat),color = "black",shape = 21,size=8)+
   geom_smooth(method=lm,color='black',fill='grey')+
   stat_cor(aes(label = after_stat(rr.label)),label.y=.0675,label.x=1,adj=1,size=8)+
   annotate("text",x=1,y=0.0625,label=(paste0("Delta = ",PDlt,"%")),adj=1,size=8)+
