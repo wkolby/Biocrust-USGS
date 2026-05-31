@@ -137,11 +137,11 @@ for(i in 1:length(treats)){
 Cover_resampled = rbind(S1,S2,S3,S4,S5,S6,S7,S8,S9,S10,S11,S12)
 Cover_resampled <- as.data.frame(Cover_resampled)
 
-colnames(Cover_resampled) <- c("Spectra", "Plot", "Block", "Treatment", "Litter", "Rock", "Bare", "PlantBase", "Lichen", "Moss", "Dark", "Light")
+colnames(Cover_resampled) <- c("Spectra", "Plot", "Block", "Treatment", "Litter", "Rock", "Bare", "Live","Dead", "Lichen", "Moss", "Dark", "Light")
 rownames(Cover_resampled) <- c(1:240)
 
 #write csv file#
-write.csv(Cover_resampled,paste(github_dir,'/data/Level1/FractionaCover_BySpectra_2021.csv',sep=''),row.names = FALSE)
+write.csv(Cover_resampled,paste(github_dir,'/data/Level1/FractionaCover_BySpectra_2021_V2.csv',sep=''),row.names = FALSE)
 
 ####Plot Check###
 blks=c(1,2,3,4,5)
@@ -170,8 +170,8 @@ treats=c("C","L","LW","W")
 for(i in 1:length(treats)){
   for(j in 1:length(blks)){
     pcover = subset(Cover_resampled, Block %in% blks[j] & Treatment %in% treats[i])
-    ptitle = paste0(pcover$Plot[1],pcover$Block[1],pcover$Treatment[1],"_Plant")
-    cover_matrix <- matrix(pcover$Plant, nrow = 3, ncol = 4)
+    ptitle = paste0(pcover$Plot[1],pcover$Block[1],pcover$Treatment[1],"_Live")
+    cover_matrix <- matrix(pcover$Live, nrow = 3, ncol = 4)
     df_long <- melt(cover_matrix)
     df_long=transform(df_long,value = as.numeric(value))
     ggplot(data = df_long, aes(x = Var1, y = Var2[12:1], fill = value)) +
@@ -184,6 +184,28 @@ for(i in 1:length(treats)){
     ggsave(paste(github_dir,'/cover_figures/FractionalCover_',ptitle,'.png',sep=''),dpi=300,width=125,height=125,units='mm')
   }
 }
+
+####Plot Check###
+blks=c(1,2,3,4,5)
+treats=c("C","L","LW","W")
+for(i in 1:length(treats)){
+  for(j in 1:length(blks)){
+    pcover = subset(Cover_resampled, Block %in% blks[j] & Treatment %in% treats[i])
+    ptitle = paste0(pcover$Plot[1],pcover$Block[1],pcover$Treatment[1],"_Dead")
+    cover_matrix <- matrix(pcover$Dead, nrow = 3, ncol = 4)
+    df_long <- melt(cover_matrix)
+    df_long=transform(df_long,value = as.numeric(value))
+    ggplot(data = df_long, aes(x = Var1, y = Var2[12:1], fill = value)) +
+      geom_tile() +
+      labs(title = ptitle,
+           x = "Columns",
+           y = "Rows",
+           fill = "Value") +
+      scale_fill_gradient(low = "white", high = "brown4") # Use white for low, red for high
+    ggsave(paste(github_dir,'/cover_figures/FractionalCover_',ptitle,'.png',sep=''),dpi=300,width=125,height=125,units='mm')
+  }
+}
+
 
 ####Plot Check###
 blks=c(1,2,3,4,5)
