@@ -1,9 +1,8 @@
+rm(list = ls()) # clear the environment
+setwd("/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis")
+github_dir <- "/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis"
 library(tidyverse)
 library(stringr)
-
-setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
-github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
-
 
 ###FUNCTIONS##################################################################################
 #Calculates sum over band range

@@ -1,11 +1,12 @@
-setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
-github_dir='/Users/wksmith/Documents/GitHub/Biocrust-USGS/'
+rm(list = ls()) # clear the environment
+setwd("/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis")
+github_dir <- "/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis"
 data_dir='/Users/wksmith/Data/USGS_Biocrust_S22/'
 
 library(tidyverse)
 library(raster)
 library(sf)
-#library(dplyr)
+library(dplyr)
 
 ###Plots########################################################################
 PlotLevel_Box<-function(D1,D2,D3,D4,clrs,filename) {

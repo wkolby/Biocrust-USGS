@@ -1,6 +1,6 @@
 rm(list = ls()) # clear the environment
-setwd("/Users/wksmith/Documents/GitHub/Biocrust-USGS")
-github_dir <- "/Users/wksmith/Documents/GitHub/Biocrust-USGS"
+setwd("/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis")
+github_dir <- "/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis"
 library(asdreader)
 library(reshape2)
 library(tidyverse)
