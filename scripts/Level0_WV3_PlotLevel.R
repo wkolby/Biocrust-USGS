@@ -1,6 +1,8 @@
 rm(list = ls()) # clear the environment
 setwd("/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis")
 github_dir <- "/Users/wksmith/Documents/GitHub/CastleValley_Campaign_Biocrust_Analysis"
+library(asdreader)
+library(reshape2)
 library(tidyverse)
 library(stringr)
 
@@ -46,25 +48,12 @@ wv3 <- read.csv2(paste(github_dir,'/data/WorldView3/',"WorldView3_Bands_Plot.csv
 wv3$Val<-as.numeric(wv3$Val)
 
 ####################################################################################################
+###Ingore the below coce, calculation were done manually to produce '/data/Level1/WV3_Bands_Indices_Plot.csv'###
 #VIs - Convert to wide format
-df_wide <- wv3 %>% select(Val, mean, full) %>%
-  pivot_wider(names_from = wavelength, values_from = mean, id_cols = full, values_fn = mean)
-
-#Bands & Chlorophyll
-df_wide$CBLUE <- calc_Band(df_wide,400,450)
-df_wide$BLUE <- calc_Band(df_wide,450,510)
-df_wide$GRN <- calc_Band(df_wide,510,580)
-df_wide$YLW <- calc_Band(df_wide,584,624)
-df_wide$RED <- calc_Band(df_wide,630,690)
-df_wide$REDE <- calc_Band(df_wide,705,745)
-df_wide$NIR <- calc_Band(df_wide,770,895)
-df_wide$NDVI <- calc_VI(df_wide, 850, 850, 650, 650)
-df_wide$BI <- calc_BI(df_wide, 560, 560, 650, 650, 850, 850)
-df_wide$NDWI <- calc_VI(df_wide, 1850, 1850, 1925, 1925)
-df_wide$CI1 <- calc_VI(df_wide, 750, 750, 550, 550)
-df_wide$CI2 <- calc_VI(df_wide, 750, 750, 710, 710)
+#df_wide <- wv3 %>% select(Wavelength, Val, full) %>%
+#  pivot_wider(names_from = Wavelength, values_from = Val, id_cols = full)
 
 #write csv file# NEED TO FIX
-out<-cbind(df_wide$full,df_wide$CBLUE,df_wide$BLUE,df_wide$GRN,df_wide$YLW,df_wide$RED,df_wide$REDE,df_wide$NIR,df_wide$NDVI,df_wide$BI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
-colnames(out)<-c('ID','CBLUE','BLUE','GREEN','YELLOW','RED','REDEDGE','NIR','NDVI','BI','NDWI','CI1','CI2')
-write.csv(out,paste(github_dir,'/data/Level1/ASD_Bands_Indices_Plot.csv',sep=''),row.names=FALSE,col.names=TRUE)
+#out<-cbind(df_wide$full,df_wide$CBLUE,df_wide$BLUE,df_wide$GRN,df_wide$YLW,df_wide$RED,df_wide$REDE,df_wide$NIR,df_wide$NDVI,df_wide$BI,df_wide$NDWI,df_wide$CI1,df_wide$CI2)
+#colnames(out)<-c('ID','CBLUE','BLUE','GREEN','YELLOW','RED','REDEDGE','NIR','NDVI','BI','NDWI','CI1','CI2')
+#write.csv(out,paste(github_dir,'/data/Level1/WV3_Bands_Indices_Plot.csv',sep=''),row.names=FALSE,col.names=TRUE)

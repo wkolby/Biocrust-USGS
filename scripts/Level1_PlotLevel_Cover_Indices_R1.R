@@ -396,7 +396,7 @@ ggplot(data_wv3, aes(x=RATIO, y=NDVI)) +
   stat_cor(aes(label = after_stat(rr.label)),label.y=.1575,label.x=.05,size=8)+
   annotate("text",x=.05,y=0.145,label=(paste0("Delta = ",-PDlt,"%")),adj=0,size=8)+
   scale_fill_manual(name='Treatment',values=c("#3288BD","#99D594","#9E0142","#5E4FA2"),labels=c("Control","AltP","Warmed","AltP + Warmed"))+
-  scale_y_continuous('Chlorophyll Index',limits = c(0.14,0.24), breaks = seq(0.14,0.24,.02)) +
+  scale_y_continuous('Chlorophyll Index',limits = c(0.139,0.24), breaks = seq(0.14,0.24,.02)) +
   scale_x_continuous('LtCy Fractional Cover',limits = c(.05,1), breaks = seq(.1,1,.1)) +
   labs(title="A. WorldView-3 Chlorophyll")+
   theme_bw()+
